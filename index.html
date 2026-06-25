@@ -3,130 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>🧸 우리 아이 숙제 다이어리 3.0</title>
+    <title>🧸 우리 아이 숙제 다이어리 V4.0</title>
     <link href="https://fonts.googleapis.com/css2?family=Dongle:wght@400;700&family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
     <style>
         :root {
-            --primary-color: #bae6fd; /* 파스텔 블루 */
-            --accent-color: #fde68a;  /* 파스텔 옐로우 */
+            --primary-color: #bae6fd;
+            --accent-color: #fde68a;
             --school-color: #fb923c;
             --academy-color: #a78bfa;
-            --text-color: #334155;
-            --bg-color: #fffbeb;      /* 크림 배경 */
+            --bg-color: #fffbeb;
         }
         
         body { font-family: 'Nanum Gothic', sans-serif; background-color: var(--bg-color); margin: 0; padding: 15px; display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 850px; background: white; padding: 25px; border-radius: 35px; border: 8px solid #fef3c7; box-shadow: 0 10px 20px rgba(0,0,0,0.03); position: relative; }
+        .container { width: 100%; max-width: 850px; background: white; padding: 25px; border-radius: 35px; border: 8px solid #fef3c7; box-shadow: 0 10px 20px rgba(0,0,0,0.03); }
         
-        /* 🐾 캐릭터 장식 */
-        .container::before { content: '🐾'; position: absolute; top: -20px; left: 20px; font-size: 30px; }
-
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 10px; flex-wrap: wrap; }
+        /* 🐱🐶 캐릭터 헤더 */
+        .header { display: flex; flex-direction: column; align-items: center; margin-bottom: 25px; gap: 15px; }
+        .character-view { width: 120px; height: 120px; border-radius: 50%; border: 6px solid #fde68a; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; margin-bottom: 10px; }
+        .character-view img { width: 90%; height: 90%; object-fit: contain; }
         
-        /* 사용자 탭 스타일 */
-        .user-tabs { display: flex; gap: 8px; flex: 1; }
-        .tab-btn { flex: 1; padding: 12px; font-family: 'Dongle', sans-serif; font-size: 24px; font-weight: bold; border: 3px solid #f1f5f9; background: white; border-radius: 20px; cursor: pointer; transition: 0.2s; }
+        .user-tabs { display: flex; gap: 8px; width: 100%; }
+        .tab-btn { flex: 1; padding: 10px; font-family: 'Dongle', sans-serif; font-size: 24px; border: 3px solid #f1f5f9; background: white; border-radius: 20px; cursor: pointer; }
         .tab-btn.active { background: var(--primary-color); border-color: #7dd3fc; color: #0369a1; }
         
-        .reward-area { display: flex; align-items: center; gap: 8px; }
-        .reward-board { font-family: 'Dongle', sans-serif; font-size: 26px; color: #d97706; background: #fff9db; padding: 5px 15px; border-radius: 20px; border: 2px dashed #fcd34d; }
-        .btn-mgmt { background: #cbd5e1; border: none; padding: 10px; border-radius: 15px; cursor: pointer; font-size: 18px; }
+        .status-bar { width: 100%; display: flex; justify-content: space-between; align-items: center; background: #fff9db; padding: 10px 20px; border-radius: 20px; border: 2px dashed #fcd34d; }
+        .reward-board { font-family: 'Dongle', sans-serif; font-size: 32px; color: #d97706; }
 
-        /* 캘린더 커스텀 */
+        /* 📅 캘린더 및 삭제선 처리 */
         #calendar { background: white; padding: 10px; border-radius: 25px; border: 4px solid #f1f5f9; margin-bottom: 25px; min-height: 480px; }
-        .fc-toolbar-title { font-family: 'Dongle', sans-serif; font-size: 2em !important; }
-        .fc-daygrid-day:hover { background: #fff9db !important; }
-        .fc-event { border: none !important; border-radius: 10px; padding: 2px 5px; font-size: 0.85em; }
+        .fc-event { border: none !important; border-radius: 10px; padding: 4px 8px; font-size: 0.9em; cursor: pointer; }
+        /* ⚠️ 캘린더 내 삭제선 스타일 */
+        .event-completed { text-decoration: line-through !important; opacity: 0.4 !important; }
 
-        /* ⚠️ 입력창 불균형 해결: 캡슐 UI */
-        .day-detail { background: #f0f9ff; padding: 20px; border-radius: 30px; border: 4px solid #e0f2fe; }
-        .selected-date-title { font-family: 'Dongle', sans-serif; font-size: 32px; color: #0369a1; margin-bottom: 15px; text-align: center; }
+        .day-detail { background: #f0f9ff; padding: 25px; border-radius: 30px; border: 4px solid #e0f2fe; }
+        .selected-date-title { font-family: 'Dongle', sans-serif; font-size: 36px; color: #0369a1; text-align: center; margin-bottom: 15px; }
         
-        /* 🎨 입력창 디자인 개선: 높이 50px로 통일 */
-        .input-group { display: flex; flex-direction: column; gap: 10px; }
-        .input-capsule { display: flex; height: 50px; background: white; border-radius: 25px; border: 3px solid #bae6fd; overflow: hidden; }
-        
-        select { width: 90px; border: none; background: #f0f9ff; padding: 0 10px; font-weight: bold; border-right: 3px solid #bae6fd; cursor: pointer; font-size: 14px; }
-        input[type="text"] { flex: 1; border: none; padding: 0 15px; font-size: 15px; outline: none; }
-        .btn-add { width: 100%; height: 50px; background: #38bdf8; color: white; border: none; border-radius: 25px; font-family: 'Dongle', sans-serif; font-size: 30px; cursor: pointer; transition: 0.2s; }
-        .btn-add:active { transform: scale(0.95); background: #0ea5e9; }
+        /* 📏 입력창 크기 통일: 60px */
+        .input-group { display: flex; flex-direction: column; gap: 12px; }
+        .capsule { display: flex; height: 60px; background: white; border-radius: 30px; border: 3px solid #bae6fd; overflow: hidden; }
+        select { width: 100px; border: none; background: #e0f2fe; padding-left: 10px; font-weight: bold; border-right: 3px solid #bae6fd; font-size: 15px; }
+        input[type="text"] { flex: 1; border: none; padding: 0 20px; font-size: 16px; outline: none; }
+        .btn-add { width: 100%; height: 60px; background: #38bdf8; color: white; border: none; border-radius: 30px; font-family: 'Dongle', sans-serif; font-size: 34px; cursor: pointer; }
 
-        /* 숙제 리스트 디자인 */
-        .todo-list { list-style: none; padding: 0; margin-top: 15px; }
+        /* 리스트 스타일 */
+        .todo-list { list-style: none; padding: 0; margin-top: 20px; }
         .todo-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: white; border-radius: 20px; margin-bottom: 10px; border: 2px solid #e2e8f0; }
-        .todo-item.completed { background: #f8fafc; opacity: 0.6; }
+        .todo-item.completed { opacity: 0.5; background: #f8fafc; }
+        .todo-item.completed .todo-text { text-decoration: line-through; }
         .todo-main { display: flex; align-items: center; gap: 10px; flex: 1; }
         .badge { padding: 4px 10px; border-radius: 15px; font-size: 11px; color: white; font-weight: bold; }
         .badge.school { background: var(--school-color); }
         .badge.academy { background: var(--academy-color); }
-        .todo-text { font-size: 16px; color: var(--text-color); font-weight: 500; }
         
-        .todo-btns { display: flex; gap: 5px; }
-        .btn-done { background: #4ade80; border: none; color: white; padding: 8px 12px; border-radius: 12px; font-weight: bold; cursor: pointer; }
-        .btn-del { background: #fca5a5; border: none; color: white; padding: 8px 12px; border-radius: 12px; cursor: pointer; }
+        .btn-done { background: #4ade80; border: none; color: white; padding: 10px 15px; border-radius: 12px; font-weight: bold; cursor: pointer; }
+        .btn-del { background: #fca5a5; border: none; color: white; padding: 10px 15px; border-radius: 12px; cursor: pointer; }
 
-        /* 모바일 최적화 */
-        @media (max-width: 600px) {
-            .header { flex-direction: column; }
-            .user-tabs { width: 100%; }
-            .reward-area { width: 100%; justify-content: space-between; }
-            .todo-item { flex-direction: column; align-items: flex-start; gap: 10px; }
-            .todo-btns { width: 100%; justify-content: flex-end; }
-        }
-
-        /* 보안 모달 */
         #mgmt-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.3); z-index:9999; justify-content:center; align-items:center; }
         .modal-content { background:white; padding:30px; border-radius:35px; width:90%; max-width:320px; text-align:center; border: 6px solid #fef3c7; }
-        .modal-content input { width: 100%; margin: 15px 0; padding:12px; border-radius:15px; border: 2px solid #DDD; text-align: center; font-size: 20px; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header">
-        <div class="user-tabs">
-            <button id="btn-child1" class="tab-btn active" onclick="switchUser('child1')">🐱 첫째</button>
-            <button id="btn-child2" class="tab-btn" onclick="switchUser('child2')">🐶 둘째</button>
+        <div class="character-view">
+            <img id="char-img" src="http://googleusercontent.com/image_collection/image_retrieval/2088605674597698721" alt="Mascot">
         </div>
-        <div class="reward-area">
-            <div class="reward-board">✨ <span id="coin-count">0</span></div>
-            <button class="btn-mgmt" onclick="handleMgmtAccess()">⚙️</button>
+        <div class="user-tabs">
+            <button id="btn-child1" class="tab-btn active" onclick="switchUser('child1')">첫째 준우</button>
+            <button id="btn-child2" class="tab-btn" onclick="switchUser('child2')">둘째 민우</button>
+        </div>
+        <div class="status-bar">
+            <div class="reward-board">스티커 ✨ <span id="coin-count">0</span>개</div>
+            <button onclick="handleMgmtAccess()" style="background:none; border:none; cursor:pointer; font-size:20px;">⚙️</button>
         </div>
     </div>
 
     <div id="calendar"></div>
 
     <div class="day-detail" id="day-detail">
-        <div class="selected-date-title"><span id="selected-date-label">오늘의 숙제</span></div>
+        <div class="selected-date-title"><span id="selected-date-label">오늘의 미션</span></div>
         <div class="input-group">
-            <div class="input-capsule">
-                <select id="new-category">
-                    <option value="school">학교</option>
-                    <option value="academy">학원</option>
-                </select>
-                <input type="text" id="todo-input" placeholder="무슨 공부를 할까요?">
+            <div class="capsule">
+                <select id="new-category"><option value="school">학교</option><option value="academy">학원</option></select>
+                <input type="text" id="todo-input" placeholder="어떤 공부를 시작할까?">
             </div>
-            <button class="btn-add" onclick="addTodo()">스티커 등록하기! 🐾</button>
+            <button class="btn-add" onclick="addTodo()">미션 등록하기! 🐾</button>
         </div>
         <ul id="todo-list" class="todo-list"></ul>
     </div>
 </div>
 
-<div id="mgmt-modal">
-    <div class="modal-content">
-        <h3 style="font-family: 'Dongle', sans-serif; font-size: 40px;">부모님 전용 ⚙️</h3>
-        <input type="number" id="manual-coin-input">
-        <div style="display:flex; gap:8px;">
-            <button style="flex:1; background:var(--primary-color); border:none; padding:12px; border-radius:15px; font-weight:bold; cursor:pointer;" onclick="updateCoinManual()">수정</button>
-            <button style="flex:1; background:#fecaca; border:none; padding:12px; border-radius:15px; font-weight:bold; cursor:pointer;" onclick="resetCoinManual()">리셋</button>
-        </div>
-        <button style="width:100%; margin-top:10px; background:#f1f5f9; border:none; padding:10px; border-radius:15px;" onclick="closeMgmt()">닫기</button>
+<div id="mgmt-modal"><div class="modal-content">
+    <h3 style="font-family:'Dongle'; font-size:40px;">부모님 전용 ⚙️</h3>
+    <input type="number" id="manual-coin-input" style="width:100%; padding:10px; margin:15px 0; border-radius:10px; text-align:center;">
+    <div style="display:flex; gap:8px;">
+        <button style="flex:1; background:var(--primary-color); border:none; padding:12px; border-radius:15px; cursor:pointer;" onclick="updateCoinManual()">수정</button>
+        <button style="flex:1; background:#fecaca; border:none; padding:12px; border-radius:15px; cursor:pointer;" onclick="resetCoinManual()">리셋</button>
     </div>
-</div>
+    <button style="width:100%; margin-top:10px; background:#f1f5f9; border:none; padding:10px; border-radius:15px;" onclick="closeMgmt()">닫기</button>
+</div></div>
 
 <script>
-    // ⚠️ 아버님의 Firebase URL을 여기에 꼭 다시 넣어주세요!
+    // ⚠️ Firebase URL을 꼭 다시 넣어주세요!
     const FIREBASE_URL = "https://homework-db-6c830-default-rtdb.firebaseio.com/"; 
 
     let currentUser = 'child1';
@@ -135,83 +115,78 @@
     let allTodos = [];
     let currentCoins = 0;
 
+    // 캐릭터 이미지 주소
+    const charImages = {
+        child1: "http://googleusercontent.com/image_collection/image_retrieval/2088605674597698721", // 고양이
+        child2: "http://googleusercontent.com/image_collection/image_retrieval/10043300103574894084"  // 강아지
+    };
+
     function handleMgmtAccess() {
-        const password = prompt("비밀번호를 입력하세요(1234)");
-        if (password === "1234") openMgmt();
-        else if (password !== null) alert("비밀번호가 틀렸어요! 🐱");
+        if(prompt("비밀번호(1234)") === "1234") openMgmt();
+        else alert("틀렸어요! 부모님께 여쭤보세요 🐱");
     }
 
     function switchUser(user) {
         currentUser = user;
         document.getElementById('btn-child1').classList.toggle('active', user === 'child1');
         document.getElementById('btn-child2').classList.toggle('active', user === 'child2');
+        document.getElementById('char-img').src = charImages[user]; // 캐릭터 변경
         fetchData();
     }
 
-    function openMgmt() {
-        document.getElementById('manual-coin-input').value = currentCoins;
-        document.getElementById('mgmt-modal').style.display = 'flex';
-    }
-    function closeMgmt() { document.getElementById('mgmt-modal').style.display = 'none'; }
-    
-    function updateCoinManual() {
-        const val = parseInt(document.getElementById('manual-coin-input').value);
-        fetch(`${FIREBASE_URL}${currentUser}/coins.json`, { method: 'PUT', body: val }).then(() => { closeMgmt(); fetchData(); });
-    }
-    function resetCoinManual() {
-        if(!confirm('코인을 0개로 다시 시작할까요?')) return;
-        fetch(`${FIREBASE_URL}${currentUser}/coins.json`, { method: 'PUT', body: 0 }).then(() => { closeMgmt(); fetchData(); });
-    }
+    function openMgmt() { document.getElementById('manual-coin-input').value = currentCoins; document.getElementById('mgmt-modal').style.display='flex'; }
+    function closeMgmt() { document.getElementById('mgmt-modal').style.display='none'; }
+    function updateCoinManual() { fetch(`${FIREBASE_URL}${currentUser}/coins.json`, { method:'PUT', body:document.getElementById('manual-coin-input').value }).then(()=> {closeMgmt(); fetchData();}); }
+    function resetCoinManual() { if(confirm('리셋할까요?')) fetch(`${FIREBASE_URL}${currentUser}/coins.json`, { method:'PUT', body:0 }).then(()=> {closeMgmt(); fetchData();}); }
 
     function addTodo() {
         const input = document.getElementById('todo-input');
-        if (!input.value.trim()) return;
-        const newTodo = { category: document.getElementById('new-category').value, text: input.value.trim(), dueDate: selectedDate, completed: false };
-        fetch(`${FIREBASE_URL}${currentUser}/todos.json`, { method: 'POST', body: JSON.stringify(newTodo) }).then(() => { input.value = ''; fetchData(); });
+        if(!input.value.trim()) return;
+        const newTodo = { category:document.getElementById('new-category').value, text:input.value.trim(), dueDate:selectedDate, completed:false };
+        fetch(`${FIREBASE_URL}${currentUser}/todos.json`, { method:'POST', body:JSON.stringify(newTodo) }).then(()=>{ input.value=''; fetchData(); });
     }
 
     function toggleTodo(id, currentStatus) {
         const nextStatus = !currentStatus;
-        let nextCoins = nextStatus ? currentCoins + 1 : Math.max(0, currentCoins - 1);
+        let nextCoins = nextStatus ? currentCoins+1 : Math.max(0, currentCoins-1);
         Promise.all([
-            fetch(`${FIREBASE_URL}${currentUser}/todos/${id}.json`, { method: 'PATCH', body: JSON.stringify({ completed: nextStatus }) }),
-            fetch(`${FIREBASE_URL}${currentUser}/coins.json`, { method: 'PUT', body: nextCoins })
-        ]).then(() => fetchData());
+            fetch(`${FIREBASE_URL}${currentUser}/todos/${id}.json`, { method:'PATCH', body:JSON.stringify({completed:nextStatus}) }),
+            fetch(`${FIREBASE_URL}${currentUser}/coins.json`, { method:'PUT', body:nextCoins })
+        ]).then(()=>fetchData());
     }
 
     function deleteTodo(id) {
-        if(!confirm('이 숙제를 지울까요?')) return;
-        const target = allTodos.find(t => t.id === id);
-        if(target && target.completed) {
-            fetch(`${FIREBASE_URL}${currentUser}/coins.json`, { method: 'PUT', body: Math.max(0, currentCoins - 1) }).then(() => actualDelete(id));
-        } else actualDelete(id);
+        const target = allTodos.find(t=>t.id===id);
+        if(confirm('지울까요?')) {
+            if(target && target.completed) fetch(`${FIREBASE_URL}${currentUser}/coins.json`, { method:'PUT', body:Math.max(0, currentCoins-1) }).then(()=>actualDelete(id));
+            else actualDelete(id);
+        }
     }
-    function actualDelete(id) { fetch(`${FIREBASE_URL}${currentUser}/todos/${id}.json`, { method: 'DELETE' }).then(() => fetchData()); }
+    function actualDelete(id) { fetch(`${FIREBASE_URL}${currentUser}/todos/${id}.json`, { method:'DELETE' }).then(()=>fetchData()); }
 
     function fetchData() {
-        fetch(`${FIREBASE_URL}${currentUser}.json`).then(r => r.json()).then(data => {
+        fetch(`${FIREBASE_URL}${currentUser}.json`).then(r=>r.json()).then(data => {
             currentCoins = data ? data.coins || 0 : 0;
-            allTodos = data && data.todos ? Object.keys(data.todos).map(k => ({ id: k, ...data.todos[k] })) : [];
+            allTodos = data && data.todos ? Object.keys(data.todos).map(k=>({ id:k, ...data.todos[k] })) : [];
             document.getElementById('coin-count').innerText = currentCoins;
             calendar.removeAllEvents();
             calendar.addEventSource(allTodos.map(t => ({ 
-                title: (t.category==='school'?'[학교] ':'[학원] ')+t.text, 
+                title: t.text, 
                 start: t.dueDate, 
                 backgroundColor: t.category==='school'? '#fb923c':'#a78bfa',
-                className: t.completed?'event-completed':'' 
+                className: t.completed ? 'event-completed' : '' // ⚠️ 캘린더 삭제선 적용
             })));
             renderDayList();
         });
     }
 
     function renderDayList() {
-        const listEl = document.getElementById('todo-list');
-        listEl.innerHTML = '';
-        const dayTodos = allTodos.filter(t => t.dueDate === selectedDate);
-        document.getElementById('selected-date-label').innerText = `📅 ${selectedDate} 숙제장`;
-        if (dayTodos.length === 0) { listEl.innerHTML = '<li style="text-align:center; color:#9CA3AF; padding:20px;">오늘은 숙제가 없어요! 야호! 🎈</li>'; return; }
+        const listEl = document.getElementById('todo-list'); listEl.innerHTML = '';
+        const dayTodos = allTodos.filter(t=>t.dueDate === selectedDate);
+        document.getElementById('selected-date-label').innerText = `📅 ${selectedDate} 미션`;
+        if(dayTodos.length===0) { listEl.innerHTML='<li style="text-align:center; color:#9CA3AF; padding:20px;">숙제 완료하고 스티커를 받자! 🎈</li>'; return; }
         dayTodos.forEach(t => {
-            const li = document.createElement('li'); li.className = `todo-item ${t.completed ? 'completed' : ''}`;
+            const li = document.createElement('li'); li.className = `todo-item ${t.completed?'completed':''}`;
             li.innerHTML = `<div class="todo-main"><span class="badge ${t.category}">${t.category==='school'?'학교':'학원'}</span><span class="todo-text">${t.text}</span></div>
                 <div class="todo-btns"><button class="btn-done" onclick="toggleTodo('${t.id}',${t.completed})">${t.completed?'취소':'완료'}</button>
                 <button class="btn-del" onclick="deleteTodo('${t.id}')">삭제</button></div>`;
@@ -221,18 +196,15 @@
 
     document.addEventListener('DOMContentLoaded', function() {
         calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
-            initialView: 'dayGridMonth', locale: 'ko', height: 'auto',
-            headerToolbar: { left: 'prev,next today', center: 'title', right: '' },
+            initialView:'dayGridMonth', locale:'ko', height:'auto',
+            headerToolbar:{ left:'prev,next today', center:'title', right:'' },
             dateClick: function(info) {
-                document.querySelectorAll('.fc-daygrid-day').forEach(el => el.style.backgroundColor = '');
-                info.dayEl.style.backgroundColor = '#fff9db';
-                selectedDate = info.dateStr; renderDayList();
+                document.querySelectorAll('.fc-daygrid-day').forEach(el=>el.style.backgroundColor='');
+                info.dayEl.style.backgroundColor='#fff9db'; selectedDate = info.dateStr; renderDayList();
             }
         });
-        calendar.render(); fetchData();
-        setInterval(fetchData, 8000);
+        calendar.render(); fetchData(); setInterval(fetchData, 8000);
     });
 </script>
 </body>
 </html>
-
