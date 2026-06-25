@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>🧸 우리 아이 숙제 마스터 V5.0</title>
+    <title>🧸 우리 아이 숙제 마스터 V5.1</title>
     <link href="https://fonts.googleapis.com/css2?family=Dongle:wght@400;700&family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
     <style>
@@ -19,28 +19,22 @@
         body { font-family: 'Nanum Gothic', sans-serif; background-color: var(--bg-color); margin: 0; padding: 15px; display: flex; justify-content: center; }
         .container { width: 100%; max-width: 850px; background: white; padding: 25px; border-radius: 35px; border: 8px solid #dcfd8b; box-shadow: 0 10px 20px rgba(0,0,0,0.03); }
         
-        /* 🐱🐶 캐릭터 상단 배치 */
+        /* 헤더 최적화: 마스코트 삭제 */
         .header { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; gap: 15px; }
-        .char-circle { width: 140px; height: 140px; border-radius: 50%; border: 6px solid #fde68a; background: white; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .char-circle img { width: 85%; height: 85%; object-fit: contain; }
         
         .user-tabs { display: flex; gap: 8px; width: 100%; }
-        .tab-btn { flex: 1; padding: 12px; font-family: 'Dongle', sans-serif; font-size: 26px; border: 3px solid #f1f5f9; background: white; border-radius: 20px; cursor: pointer; transition: 0.2s; outline: none; }
+        .tab-btn { flex: 1; padding: 12px; font-family: 'Dongle', sans-serif; font-size: 28px; border: 3px solid #f1f5f9; background: white; border-radius: 20px; cursor: pointer; transition: 0.2s; outline: none; }
         .tab-btn.active { background: var(--primary-color); border-color: #7dd3fc; color: #0369a1; }
         
         .status-row { width: 100%; display: flex; justify-content: space-between; align-items: center; background: #fff9db; padding: 10px 20px; border-radius: 20px; border: 2px dashed #fcd34d; }
         .coin-box { font-family: 'Dongle', sans-serif; font-size: 34px; color: #d97706; }
 
-        /* 📅 캘린더 스타일 및 ⚠️ 삭제선 강제 적용 최적화 */
+        /* 📅 캘린더 스타일 */
         #calendar { background: white; padding: 10px; border-radius: 25px; border: 4px solid #f1f5f9; margin-bottom: 25px; min-height: 500px; }
         .fc-toolbar-title { font-family: 'Dongle', sans-serif; font-size: 2em !important; }
         
-        /* 캘린더 내부 완료 숙제 삭제선 (전역 강제 설정) */
         .event-completed { opacity: 0.5 !important; }
-        .event-completed .fc-event-title, 
-        .event-completed .fc-event-main,
-        .event-completed div,
-        .event-completed span { 
+        .event-completed .fc-event-title, .event-completed .fc-event-main { 
             text-decoration: line-through !important; 
             text-decoration-color: rgba(0,0,0,0.6) !important;
             text-decoration-thickness: 2px !important;
@@ -82,13 +76,9 @@
 
 <div class="container">
     <div class="header">
-        <div class="char-circle">
-            <!-- ⚠️ OpenMoji 영구 서버 이미지로 전면 교체 (절대 404 안 뜸) -->
-            <img id="mascot-img" src="https://openmoji.org/data/color/svg/1F431.svg" alt="Cat Mascot">
-        </div>
         <div class="user-tabs">
-            <button id="tab-c1" class="tab-btn active" onclick="switchUser('child1')">첫째 준우 🐱</button>
-            <button id="tab-c2" class="tab-btn" onclick="switchUser('child2')">둘째 민우 🐶</button>
+            <button id="tab-c1" class="tab-btn active" onclick="switchUser('child1')">첫째 준우</button>
+            <button id="tab-c2" class="tab-btn" onclick="switchUser('child2')">둘째 민우</button>
         </div>
         <div class="status-row">
             <div class="coin-box">칭찬 스티커 ✨ <span id="coin-val">0</span>개</div>
@@ -120,7 +110,7 @@
 </div></div>
 
 <script>
-    // ⚠️ 아버님의 Firebase URL을 여기에 다시 넣어주세요! 끝에 / 가 있어야 합니다.
+    // ⚠️ 아버님의 Firebase URL을 다시 넣어주세요! 끝에 / 가 있어야 합니다.
     const FIREBASE_URL = "https://homework-db-6c830-default-rtdb.firebaseio.com/"; 
 
     let currentUser = 'child1';
@@ -128,12 +118,6 @@
     let calendar;
     let allTodos = [];
     let currentCoins = 0;
-
-    // 🐾 OpenMoji 공식 영구 주소 (Cat & Dog)
-    const charAvatars = {
-        child1: "https://openmoji.org/data/color/svg/1F431.svg", // 고양이
-        child2: "https://openmoji.org/data/color/svg/1F436.svg"  // 강아지
-    };
 
     function checkAdminPin() {
         if(prompt("보안 번호를 입력하세요(1234)") === "1234") {
@@ -147,7 +131,6 @@
         currentUser = user;
         document.getElementById('tab-c1').classList.toggle('active', user === 'child1');
         document.getElementById('tab-c2').classList.toggle('active', user === 'child2');
-        document.getElementById('mascot-img').src = charAvatars[user]; 
         fetchData();
     }
 
