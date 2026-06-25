@@ -3,60 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>우리 집 숙제 마스터 (캘린더 모드)</title>
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
+    <title>우리 집 숙제 마스터 2.0</title>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
     <style>
         :root {
             --primary-color: #4A90E2;
             --success-color: #2ECC71;
             --school-color: #E67E22;
             --academy-color: #9B59B6;
-            --bg-color: #F8FAFC;
+            --bg-color: #F1F5F9;
         }
-        body { font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; background-color: var(--bg-color); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .container { width: 100%; max-width: 900px; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+        body { font-family: 'Malgun Gothic', sans-serif; background-color: var(--bg-color); margin: 0; padding: 15px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 900px; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
         
-        /* 헤더 섹션 */
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .user-tabs { display: flex; gap: 10px; }
-        .tab-btn { padding: 10px 20px; font-size: 15px; font-weight: bold; border: 2px solid #E2E8F0; background: white; border-radius: 12px; cursor: pointer; transition: all 0.2s; }
+        .tab-btn { padding: 10px 18px; font-weight: bold; border: 2px solid #DDD; background: white; border-radius: 10px; cursor: pointer; transition: 0.2s; }
         .tab-btn.active { background: var(--primary-color); color: white; border-color: var(--primary-color); }
-        .reward-board { font-size: 18px; font-weight: bold; color: #D35400; background: #FFF9E6; padding: 10px 20px; border-radius: 12px; border: 1px dashed #F1C40F; }
+        .reward-board { font-size: 17px; font-weight: bold; color: #D35400; background: #FFF9E6; padding: 10px 15px; border-radius: 10px; border: 1px dashed #F1C40F; }
 
-        /* 캘린더 스타일 */
-        #calendar { background: white; padding: 15px; border-radius: 15px; border: 1px solid #E2E8F0; margin-bottom: 30px; }
-        .fc-toolbar-title { font-size: 1.2em !important; color: #334155; }
-        .fc-daygrid-day { cursor: pointer; transition: background 0.2s; }
-        .fc-daygrid-day:hover { background-color: #F1F5F9; }
-        .fc-event { border: none !important; padding: 2px 5px; font-size: 0.85em; border-radius: 4px; }
-        .event-completed { text-decoration: line-through; opacity: 0.5; }
+        /* 캘린더 디자인: 높이를 고정하여 안보이는 현상 방지 */
+        #calendar { background: white; padding: 10px; border-radius: 12px; border: 1px solid #E2E8F0; margin-bottom: 25px; min-height: 500px; }
+        .fc-event { cursor: pointer; border: none !important; font-size: 0.85em; padding: 3px; border-radius: 4px; }
+        .event-completed { text-decoration: line-through; opacity: 0.4; }
 
-        /* 하단 상세 리스트 영역 */
-        .day-detail { background: #F1F5F9; padding: 25px; border-radius: 15px; border: 1px solid #E2E8F0; }
-        .selected-date-title { font-size: 18px; font-weight: bold; color: #1E293B; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .day-detail { background: #F8FAFC; padding: 20px; border-radius: 15px; border: 1px solid #E2E8F0; }
+        .selected-date-title { font-weight: bold; margin-bottom: 15px; color: #334155; font-size: 1.1em; display: flex; justify-content: space-between; }
         
-        .input-group { display: flex; gap: 10px; margin-bottom: 20px; background: white; padding: 15px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .input-group { display: flex; gap: 8px; margin-bottom: 15px; }
         select, input { padding: 12px; border: 1px solid #CBD5E1; border-radius: 8px; font-size: 15px; }
         input[type="text"] { flex: 1; }
         .btn-add { background: var(--primary-color); color: white; border: none; padding: 0 20px; border-radius: 8px; font-weight: bold; cursor: pointer; }
 
-        .todo-list { list-style: none; padding: 0; margin: 0; }
-        .todo-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: white; border: 1px solid #E2E8F0; border-radius: 10px; margin-bottom: 8px; }
-        .todo-item.completed { background: #F8FAFC; color: #94A3B8; }
-        .todo-content { display: flex; align-items: center; gap: 10px; flex: 1; }
-        .badge { padding: 4px 8px; border-radius: 6px; font-size: 11px; color: white; font-weight: bold; text-transform: uppercase; }
+        .todo-list { list-style: none; padding: 0; }
+        .todo-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: white; border: 1px solid #E2E8F0; border-radius: 8px; margin-bottom: 8px; }
+        .todo-item.completed { background: #F1F5F9; color: #94A3B8; }
+        .todo-item.completed span { text-decoration: line-through; }
+        .badge { padding: 3px 7px; border-radius: 5px; font-size: 11px; color: white; font-weight: bold; margin-right: 10px; }
         .badge.school { background: var(--school-color); }
         .badge.academy { background: var(--academy-color); }
         
-        .actions button { border: none; padding: 8px 12px; border-radius: 6px; color: white; font-size: 13px; font-weight: bold; cursor: pointer; margin-left: 5px; }
-        .btn-done { background: var(--success-color); }
-        .btn-del { background: #94A3B8; }
-
-        @media (max-width: 600px) {
-            .header { flex-direction: column; gap: 15px; }
-            .input-group { flex-direction: column; }
-            input[type="date"] { width: 100%; }
-        }
+        .btn-done { background: var(--success-color); border: none; padding: 6px 12px; border-radius: 5px; color: white; font-weight: bold; cursor: pointer; }
+        .btn-del { background: #94A3B8; border: none; padding: 6px 12px; border-radius: 5px; color: white; cursor: pointer; margin-left: 5px; }
     </style>
 </head>
 <body>
@@ -67,34 +55,29 @@
             <button id="btn-child1" class="tab-btn active" onclick="switchUser('child1')">첫째</button>
             <button id="btn-child2" class="tab-btn" onclick="switchUser('child2')">둘째</button>
         </div>
-        <div class="reward-board">
-            🪙 <span id="current-user-name">첫째</span> 코인: <span id="coin-count">0</span>
-        </div>
+        <div class="reward-board">🪙 <span id="current-user-name">첫째</span> 코인: <span id="coin-count">0</span></div>
     </div>
 
     <div id="calendar"></div>
 
-    <div class="day-detail">
+    <div class="day-detail" id="day-detail">
         <div class="selected-date-title">
-            <span id="selected-date-label">날짜를 클릭하세요</span>
+            <span id="selected-date-label">날짜를 클릭해 보세요!</span>
         </div>
-        
         <div class="input-group">
             <select id="new-category">
                 <option value="school">학교</option>
                 <option value="academy">학원</option>
             </select>
-            <input type="text" id="todo-input" placeholder="이 날에 할 숙제를 입력하세요...">
+            <input type="text" id="todo-input" placeholder="이 날 할 숙제를 입력하세요...">
             <button class="btn-add" onclick="addTodo()">등록</button>
         </div>
-
-        <ul id="todo-list" class="todo-list">
-            </ul>
+        <ul id="todo-list" class="todo-list"></ul>
     </div>
 </div>
 
 <script>
-    // ⚠️ 아버님의 Firebase URL을 꼭 확인해서 넣어주세요!
+    // ⚠️ 아버님의 Firebase URL을 다시 확인해서 꼭 넣어주세요!
     const FIREBASE_URL = "https://homework-db-6c830-default-rtdb.firebaseio.com/"; 
 
     let currentUser = 'child1';
@@ -102,7 +85,7 @@
     let calendar;
     let allTodos = [];
 
-    // 전역 함수: HTML onclick에서 호출 가능하도록 DOMContentLoaded 밖으로 뺌
+    // 전역 함수: 버튼이 즉시 인식할 수 있도록 밖으로 꺼냄
     function switchUser(user) {
         currentUser = user;
         document.getElementById('btn-child1').classList.toggle('active', user === 'child1');
@@ -114,65 +97,89 @@
     function addTodo() {
         const input = document.getElementById('todo-input');
         const text = input.value.trim();
-        if (!text) { alert('숙제 내용을 입력해주세요!'); return; }
-
+        if (!text) { alert('내용을 입력해 주세요!'); return; }
         const newTodo = {
             category: document.getElementById('new-category').value,
             text: text,
-            dueDate: selectedDate, // 현재 선택된 날짜에 저장
+            dueDate: selectedDate,
             completed: false
         };
-
-        fetch(`${FIREBASE_URL}${currentUser}/todos.json`, {
-            method: 'POST',
-            body: JSON.stringify(newTodo)
-        }).then(() => {
-            input.value = '';
-            fetchData();
-        }).catch(err => console.error("등록 오류:", err));
+        fetch(`${FIREBASE_URL}${currentUser}/todos.json`, { method: 'POST', body: JSON.stringify(newTodo) })
+        .then(() => { input.value = ''; fetchData(); });
     }
 
     function toggleTodo(id, currentStatus) {
         const nextStatus = !currentStatus;
-        fetch(`${FIREBASE_URL}${currentUser}/coins.json`)
-        .then(res => res.json())
-        .then(currentCoins => {
+        fetch(`${FIREBASE_URL}${currentUser}/coins.json`).then(r => r.json()).then(currentCoins => {
             let coins = currentCoins || 0;
             coins = nextStatus ? coins + 1 : Math.max(0, coins - 1);
-            
-            return Promise.all([
+            Promise.all([
                 fetch(`${FIREBASE_URL}${currentUser}/todos/${id}.json`, { method: 'PATCH', body: JSON.stringify({ completed: nextStatus }) }),
                 fetch(`${FIREBASE_URL}${currentUser}/coins.json`, { method: 'PUT', body: coins })
-            ]);
-        }).then(() => fetchData());
+            ]).then(() => fetchData());
+        });
     }
 
     function deleteTodo(id) {
-        if(!confirm('정말 삭제할까요?')) return;
-        fetch(`${FIREBASE_URL}${currentUser}/todos/${id}.json`, { method: 'DELETE' })
-        .then(() => fetchData());
+        if(!confirm('삭제할까요?')) return;
+        fetch(`${FIREBASE_URL}${currentUser}/todos/${id}.json`, { method: 'DELETE' }).then(() => fetchData());
     }
 
     function fetchData() {
-        fetch(`${FIREBASE_URL}${currentUser}.json`)
-        .then(res => res.json())
-        .then(data => {
+        fetch(`${FIREBASE_URL}${currentUser}.json`).then(r => r.json()).then(data => {
             const coins = data ? data.coins || 0 : 0;
-            allTodos = data && data.todos ? Object.keys(data.todos).map(key => ({ id: key, ...data.todos[key] })) : [];
-            
+            allTodos = data && data.todos ? Object.keys(data.todos).map(k => ({ id: k, ...data.todos[k] })) : [];
             document.getElementById('coin-count').innerText = coins;
             
-            // 캘린더 이벤트 갱신
-            const events = allTodos.map(todo => ({
-                id: todo.id,
-                title: todo.text,
-                start: todo.dueDate,
-                backgroundColor: todo.category === 'school' ? '#E67E22' : '#9B59B6',
-                className: todo.completed ? 'event-completed' : ''
+            const events = allTodos.map(t => ({
+                id: t.id, title: t.text, start: t.dueDate,
+                backgroundColor: t.category === 'school' ? '#E67E22' : '#9B59B6',
+                className: t.completed ? 'event-completed' : ''
             }));
-            
             calendar.removeAllEvents();
             calendar.addEventSource(events);
-            
             renderDayList();
-        }).catch(err => console.error("데이터 로딩 오류:", err));
+        });
+    }
+
+    function renderDayList() {
+        const listEl = document.getElementById('todo-list');
+        listEl.innerHTML = '';
+        const dayTodos = allTodos.filter(t => t.dueDate === selectedDate);
+        document.getElementById('selected-date-label').innerText = `📅 ${selectedDate} 숙제 리스트`;
+        if (dayTodos.length === 0) {
+            listEl.innerHTML = '<li style="text-align:center; color:#94A3B8; padding:15px;">숙제가 없습니다.</li>';
+            return;
+        }
+        dayTodos.forEach(t => {
+            const li = document.createElement('li');
+            li.className = `todo-item ${t.completed ? 'completed' : ''}`;
+            li.innerHTML = `<div><span class="badge ${t.category}">${t.category==='school'?'학교':'학원'}</span><span>${t.text}</span></div>
+                <div><button class="btn-done" onclick="toggleTodo('${t.id}',${t.completed})">${t.completed?'취소':'체크'}</button>
+                <button class="btn-del" onclick="deleteTodo('${t.id}')">삭제</button></div>`;
+            listEl.appendChild(li);
+        });
+    }
+
+    // 페이지 로딩 시 달력 초기화
+    document.addEventListener('DOMContentLoaded', function() {
+        const calendarEl = document.getElementById('calendar');
+        calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            locale: 'ko',
+            height: 580,
+            headerToolbar: { left: 'prev,next today', center: 'title', right: '' },
+            dateClick: function(info) {
+                selectedDate = info.dateStr;
+                renderDayList();
+            }
+        });
+        calendar.render();
+        fetchData();
+        setInterval(fetchData, 8000); // 8초 자동 동기화
+    });
+</script>
+</body>
+</html>
+
+아드님들의 성공적인 숙제 관리를 응원합니다! 이제 로드맵과 최종 코드를 확인해 보세요.
