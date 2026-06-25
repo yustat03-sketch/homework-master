@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>우리 집 숙제 마스터 PRO 2.3</title>
+    <title>우리 집 숙제 마스터 PRO 2.4</title>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
     <style>
         :root {
@@ -12,64 +12,66 @@
             --school-color: #E67E22;
             --academy-color: #9B59B6;
             --danger-color: #E74C3C;
-            --bg-color: #F3F4F6;
+            --bg-color: #F8FAFC;
         }
-        /* 기본 레이아웃 */
-        body { font-family: 'Malgun Gothic', sans-serif; background-color: var(--bg-color); margin: 0; padding: 15px; display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 900px; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
         
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 10px; flex-wrap: wrap; }
-        .user-tabs { display: flex; gap: 8px; }
-        .tab-btn { padding: 10px 15px; font-weight: bold; border: 2px solid #E5E7EB; background: white; border-radius: 12px; cursor: pointer; font-size: 14px; }
+        body { font-family: 'Malgun Gothic', sans-serif; background-color: var(--bg-color); margin: 0; padding: 10px; display: flex; justify-content: center; overflow-x: hidden; }
+        .container { width: 100%; max-width: 900px; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
+        
+        /* 헤더 모바일 대응 */
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 10px; }
+        .user-tabs { display: flex; gap: 5px; flex: 1; }
+        .tab-btn { flex: 1; padding: 12px 5px; font-weight: bold; border: 1px solid #E2E8F0; background: white; border-radius: 10px; cursor: pointer; font-size: 14px; white-space: nowrap; }
         .tab-btn.active { background: var(--primary-color); color: white; border-color: var(--primary-color); }
         
         .reward-area { display: flex; align-items: center; gap: 8px; }
-        .reward-board { font-size: 16px; font-weight: bold; color: #D35400; background: #FFF9E6; padding: 8px 15px; border-radius: 10px; border: 1px dashed #F1C40F; }
-        .btn-mgmt { background: #64748B; color: white; border: none; padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; }
+        .reward-board { font-size: 15px; font-weight: bold; color: #D35400; background: #FFF9E6; padding: 8px 12px; border-radius: 10px; border: 1px dashed #F1C40F; }
+        .btn-mgmt { background: #64748B; color: white; border: none; padding: 10px; border-radius: 10px; font-size: 12px; font-weight: bold; cursor: pointer; height: 40px; }
 
-        /* 캘린더 반응형 */
-        #calendar { background: white; padding: 10px; border-radius: 15px; border: 1px solid #E5E7EB; margin-bottom: 20px; min-height: 450px; }
+        /* 캘린더 모바일 대응 */
+        #calendar { background: white; padding: 5px; border-radius: 12px; border: 1px solid #E2E8F0; margin-bottom: 20px; min-height: 450px; }
         .fc-toolbar-title { font-size: 1.1em !important; }
-        .fc-button { padding: 4px 8px !important; font-size: 0.85em !important; }
+        .fc-button { padding: 4px 6px !important; font-size: 0.8em !important; }
 
         /* 상세 리스트 및 입력창 모바일 최적화 */
-        .day-detail { background: #F9FAFB; padding: 20px; border-radius: 15px; border: 1px solid #E5E7EB; }
-        .selected-date-title { font-size: 1em; font-weight: bold; color: #1F2937; margin-bottom: 15px; border-bottom: 2px solid #E5E7EB; padding-bottom: 10px; }
+        .day-detail { background: #F9FAFB; padding: 15px; border-radius: 12px; border: 1px solid #E2E8F0; }
+        .selected-date-title { font-size: 1em; font-weight: bold; color: #1E293B; margin-bottom: 15px; border-bottom: 2px solid #E2E8F0; padding-bottom: 10px; text-align: center; }
         
-        /* ⚠️ 모바일에서 가로로 깨지던 부분 수정 (Flex wrap & direction) */
-        .input-group { display: flex; gap: 10px; margin-bottom: 15px; flex-direction: row; }
-        select { width: 80px; }
-        input[type="text"] { flex: 1; min-width: 0; } /* 텍스트 박스 좁아져도 안 깨지게 */
-        
-        /* 📱 모바일 전용 스타일 (화면 폭 600px 이하) */
-        @media (max-width: 600px) {
-            body { padding: 10px; }
-            .container { padding: 15px; }
-            .header { justify-content: center; text-align: center; }
-            .user-tabs { width: 100%; justify-content: center; }
-            .reward-area { width: 100%; justify-content: space-between; }
-            
-            .input-group { flex-direction: column; } /* 입력을 세로로 쌓기 */
-            select, input[type="text"], .btn-add { width: 100%; height: 48px; } /* 버튼 크게 */
-            
-            .todo-item { flex-direction: column; align-items: flex-start; gap: 10px; }
-            .todo-item div:last-child { width: 100%; display: flex; justify-content: flex-end; }
-        }
+        /* ⚠️ 핵심: 모바일에서 무조건 수직으로 쌓는 입력 그룹 */
+        .input-group { display: flex; gap: 10px; margin-bottom: 15px; flex-direction: column; }
+        .input-row { display: flex; gap: 10px; width: 100%; }
+        select { width: 90px; height: 50px; font-size: 15px; border-radius: 10px; border: 1px solid #CBD5E1; padding: 0 5px; }
+        input[type="text"] { flex: 1; height: 50px; font-size: 15px; border-radius: 10px; border: 1px solid #CBD5E1; padding: 0 12px; }
+        .btn-add { width: 100%; height: 50px; background: var(--primary-color); color: white; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; }
 
+        /* 리스트 아이템 모바일 대응 */
         .todo-list { list-style: none; padding: 0; }
-        .todo-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: white; border: 1px solid #E5E7EB; border-radius: 12px; margin-bottom: 8px; }
-        .todo-item.completed { background: #F3F4F6; color: #9CA3AF; }
-        .todo-item.completed .todo-text { text-decoration: line-through; }
-        .badge { padding: 3px 6px; border-radius: 5px; font-size: 10px; color: white; font-weight: bold; margin-right: 8px; }
+        .todo-item { display: flex; flex-direction: column; padding: 15px; background: white; border: 1px solid #E2E8F0; border-radius: 12px; margin-bottom: 10px; gap: 12px; }
+        .todo-item.completed { background: #F1F5F9; color: #94A3B8; }
+        .todo-main { display: flex; align-items: flex-start; gap: 10px; width: 100%; }
+        .badge { padding: 4px 8px; border-radius: 6px; font-size: 11px; color: white; font-weight: bold; flex-shrink: 0; margin-top: 2px; }
         .badge.school { background: var(--school-color); }
         .badge.academy { background: var(--academy-color); }
-        .btn-done { background: var(--success-color); border: none; padding: 8px 12px; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; }
-        .btn-del { background: #9CA3AF; border: none; padding: 8px 12px; border-radius: 8px; color: white; cursor: pointer; margin-left: 5px; }
+        .todo-text { font-size: 16px; flex: 1; word-break: break-all; }
+        
+        .todo-btns { display: flex; justify-content: flex-end; gap: 8px; width: 100%; }
+        .btn-done { flex: 1; max-width: 100px; height: 44px; background: var(--success-color); border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; }
+        .btn-del { flex: 1; max-width: 80px; height: 44px; background: #94A3B8; border: none; border-radius: 8px; color: white; cursor: pointer; }
 
-        /* 보안 모달 */
-        #mgmt-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center; padding:20px; }
+        /* 보안 모달 모바일 최적화 */
+        #mgmt-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center; padding:20px; }
         .modal-content { background:white; padding:25px; border-radius:20px; width:100%; max-width:320px; text-align:center; }
-        .modal-content input { width: 100%; margin-bottom: 15px; text-align:center; padding:12px; font-size:18px; }
+        .modal-content input { width: 100%; margin-bottom: 15px; text-align:center; padding:15px; font-size:20px; border: 1px solid #DDD; border-radius: 10px; }
+        
+        /* 📱 600px 이상일 때만 가로 배치로 복구 (PC 화면) */
+        @media (min-width: 601px) {
+            .input-group { flex-direction: row; }
+            .btn-add { width: 120px; }
+            .todo-item { flex-direction: row; align-items: center; justify-content: space-between; }
+            .todo-main { width: auto; }
+            .todo-btns { width: auto; }
+            .tab-btn { padding: 12px 20px; font-size: 16px; }
+        }
     </style>
 </head>
 <body>
@@ -91,9 +93,11 @@
     <div class="day-detail" id="day-detail">
         <div class="selected-date-title"><span id="selected-date-label">오늘의 숙제</span></div>
         <div class="input-group">
-            <select id="new-category"><option value="school">학교</option><option value="academy">학원</option></select>
-            <input type="text" id="todo-input" placeholder="숙제 내용 입력...">
-            <button class="btn-add" onclick="addTodo()">등록</button>
+            <div class="input-row">
+                <select id="new-category"><option value="school">학교</option><option value="academy">학원</option></select>
+                <input type="text" id="todo-input" placeholder="할 일 입력...">
+            </div>
+            <button class="btn-add" onclick="addTodo()">퀘스트 등록</button>
         </div>
         <ul id="todo-list" class="todo-list"></ul>
     </div>
@@ -104,15 +108,15 @@
         <h3 id="mgmt-title">코인 관리</h3>
         <input type="number" id="manual-coin-input">
         <div style="display:flex; gap:10px;">
-            <button style="flex:1; background:var(--primary-color); color:white; border:none; padding:10px; border-radius:8px;" onclick="updateCoinManual()">수정</button>
-            <button style="flex:1; background:var(--danger-color); color:white; border:none; padding:10px; border-radius:8px;" onclick="resetCoinManual()">리셋</button>
+            <button style="flex:1; height:48px; background:var(--primary-color); color:white; border:none; border-radius:10px; font-weight:bold;" onclick="updateCoinManual()">수정</button>
+            <button style="flex:1; height:48px; background:var(--danger-color); color:white; border:none; border-radius:10px; font-weight:bold;" onclick="resetCoinManual()">리셋</button>
         </div>
-        <button style="width:100%; margin-top:10px; background:#64748B; color:white; border:none; padding:10px; border-radius:8px;" onclick="closeMgmt()">닫기</button>
+        <button style="width:100%; margin-top:10px; height:48px; background:#64748B; color:white; border:none; border-radius:10px;" onclick="closeMgmt()">닫기</button>
     </div>
 </div>
 
 <script>
-    // ⚠️ Firebase URL을 꼭 다시 넣어주세요!
+    // ⚠️ 아버님의 Firebase URL을 여기에 꼭 다시 넣어주세요!
     const FIREBASE_URL = "https://homework-db-6c830-default-rtdb.firebaseio.com/"; 
 
     let currentUser = 'child1';
@@ -122,7 +126,7 @@
     let currentCoins = 0;
 
     function handleMgmtAccess() {
-        const password = prompt("부모님 비밀번호(1234)");
+        const password = prompt("비밀번호(1234)");
         if (password === "1234") openMgmt();
         else if (password !== null) alert("틀렸습니다!");
     }
@@ -194,8 +198,8 @@
         if (dayTodos.length === 0) { listEl.innerHTML = '<li style="text-align:center; color:#9CA3AF; padding:10px;">없음</li>'; return; }
         dayTodos.forEach(t => {
             const li = document.createElement('li'); li.className = `todo-item ${t.completed ? 'completed' : ''}`;
-            li.innerHTML = `<div><span class="badge ${t.category}">${t.category==='school'?'학교':'학원'}</span><span class="todo-text">${t.text}</span></div>
-                <div><button class="btn-done" onclick="toggleTodo('${t.id}',${t.completed})">${t.completed?'취소':'체크'}</button>
+            li.innerHTML = `<div class="todo-main"><span class="badge ${t.category}">${t.category==='school'?'학교':'학원'}</span><span class="todo-text">${t.text}</span></div>
+                <div class="todo-btns"><button class="btn-done" onclick="toggleTodo('${t.id}',${t.completed})">${t.completed?'취소':'체크'}</button>
                 <button class="btn-del" onclick="deleteTodo('${t.id}')">삭제</button></div>`;
             listEl.appendChild(li);
         });
