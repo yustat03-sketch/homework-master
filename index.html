@@ -2,8 +2,8 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>우리 집 숙제 마스터 PRO 2.2 (Security)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>우리 집 숙제 마스터 PRO 2.3</title>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
     <style>
         :root {
@@ -14,51 +14,62 @@
             --danger-color: #E74C3C;
             --bg-color: #F3F4F6;
         }
-        body { font-family: 'Malgun Gothic', sans-serif; background-color: var(--bg-color); margin: 0; padding: 20px; display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 900px; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        /* 기본 레이아웃 */
+        body { font-family: 'Malgun Gothic', sans-serif; background-color: var(--bg-color); margin: 0; padding: 15px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 900px; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
         
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; gap: 15px; }
-        .user-tabs { display: flex; gap: 10px; }
-        .tab-btn { padding: 12px 20px; font-weight: bold; border: 2px solid #E5E7EB; background: white; border-radius: 12px; cursor: pointer; transition: 0.2s; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 10px; flex-wrap: wrap; }
+        .user-tabs { display: flex; gap: 8px; }
+        .tab-btn { padding: 10px 15px; font-weight: bold; border: 2px solid #E5E7EB; background: white; border-radius: 12px; cursor: pointer; font-size: 14px; }
         .tab-btn.active { background: var(--primary-color); color: white; border-color: var(--primary-color); }
         
-        .reward-area { display: flex; align-items: center; gap: 10px; }
-        .reward-board { font-size: 18px; font-weight: bold; color: #D35400; background: #FFF9E6; padding: 10px 20px; border-radius: 12px; border: 1px dashed #F1C40F; display: flex; align-items: center; gap: 10px; }
-        .btn-mgmt { background: #64748B; color: white; border: none; padding: 8px 12px; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+        .reward-area { display: flex; align-items: center; gap: 8px; }
+        .reward-board { font-size: 16px; font-weight: bold; color: #D35400; background: #FFF9E6; padding: 8px 15px; border-radius: 10px; border: 1px dashed #F1C40F; }
+        .btn-mgmt { background: #64748B; color: white; border: none; padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; }
 
-        /* 캘린더 */
-        #calendar { background: white; padding: 15px; border-radius: 15px; border: 1px solid #E5E7EB; margin-bottom: 30px; min-height: 550px; }
-        .fc-daygrid-day { cursor: pointer; }
-        .selected-day { background-color: #FEF9C3 !important; }
-        .fc-event { border: none !important; padding: 3px; font-size: 0.85em; border-radius: 4px; cursor: pointer; }
-        .event-completed { text-decoration: line-through; opacity: 0.4; }
+        /* 캘린더 반응형 */
+        #calendar { background: white; padding: 10px; border-radius: 15px; border: 1px solid #E5E7EB; margin-bottom: 20px; min-height: 450px; }
+        .fc-toolbar-title { font-size: 1.1em !important; }
+        .fc-button { padding: 4px 8px !important; font-size: 0.85em !important; }
 
-        /* 상세 리스트 */
-        .day-detail { background: #F9FAFB; padding: 25px; border-radius: 15px; border: 1px solid #E5E7EB; }
-        .selected-date-title { font-size: 1.1em; font-weight: bold; color: #1F2937; margin-bottom: 20px; border-bottom: 2px solid #E5E7EB; padding-bottom: 10px; }
-        .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
-        select, input { padding: 12px; border: 1px solid #D1D5DB; border-radius: 10px; font-size: 15px; }
-        input[type="text"] { flex: 1; }
-        .btn-add { background: var(--primary-color); color: white; border: none; padding: 0 25px; border-radius: 10px; font-weight: bold; cursor: pointer; }
+        /* 상세 리스트 및 입력창 모바일 최적화 */
+        .day-detail { background: #F9FAFB; padding: 20px; border-radius: 15px; border: 1px solid #E5E7EB; }
+        .selected-date-title { font-size: 1em; font-weight: bold; color: #1F2937; margin-bottom: 15px; border-bottom: 2px solid #E5E7EB; padding-bottom: 10px; }
+        
+        /* ⚠️ 모바일에서 가로로 깨지던 부분 수정 (Flex wrap & direction) */
+        .input-group { display: flex; gap: 10px; margin-bottom: 15px; flex-direction: row; }
+        select { width: 80px; }
+        input[type="text"] { flex: 1; min-width: 0; } /* 텍스트 박스 좁아져도 안 깨지게 */
+        
+        /* 📱 모바일 전용 스타일 (화면 폭 600px 이하) */
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            .container { padding: 15px; }
+            .header { justify-content: center; text-align: center; }
+            .user-tabs { width: 100%; justify-content: center; }
+            .reward-area { width: 100%; justify-content: space-between; }
+            
+            .input-group { flex-direction: column; } /* 입력을 세로로 쌓기 */
+            select, input[type="text"], .btn-add { width: 100%; height: 48px; } /* 버튼 크게 */
+            
+            .todo-item { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .todo-item div:last-child { width: 100%; display: flex; justify-content: flex-end; }
+        }
 
         .todo-list { list-style: none; padding: 0; }
-        .todo-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: white; border: 1px solid #E5E7EB; border-radius: 12px; margin-bottom: 10px; }
+        .todo-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: white; border: 1px solid #E5E7EB; border-radius: 12px; margin-bottom: 8px; }
         .todo-item.completed { background: #F3F4F6; color: #9CA3AF; }
-        .badge { padding: 4px 8px; border-radius: 6px; font-size: 11px; color: white; font-weight: bold; margin-right: 12px; }
+        .todo-item.completed .todo-text { text-decoration: line-through; }
+        .badge { padding: 3px 6px; border-radius: 5px; font-size: 10px; color: white; font-weight: bold; margin-right: 8px; }
         .badge.school { background: var(--school-color); }
         .badge.academy { background: var(--academy-color); }
-        .btn-done { background: var(--success-color); border: none; padding: 8px 15px; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; }
-        .btn-del { background: #9CA3AF; border: none; padding: 8px 15px; border-radius: 8px; color: white; cursor: pointer; margin-left: 5px; }
+        .btn-done { background: var(--success-color); border: none; padding: 8px 12px; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; }
+        .btn-del { background: #9CA3AF; border: none; padding: 8px 12px; border-radius: 8px; color: white; cursor: pointer; margin-left: 5px; }
 
-        /* 관리 모달 (비밀번호 성공 후 보임) */
-        #mgmt-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center; }
-        .modal-content { background:white; padding:30px; border-radius:20px; width:300px; text-align:center; box-shadow: 0 15px 40px rgba(0,0,0,0.2); }
-        .modal-content h3 { margin-bottom: 20px; color: #1F2937; }
-        .modal-content input { width: 100%; margin-bottom: 15px; text-align:center; font-size: 18px; font-weight: bold; }
-        .modal-btns { display:flex; gap:10px; justify-content:center; }
-        .btn-save { background: var(--primary-color); color:white; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; font-weight: bold; }
-        .btn-reset { background: var(--danger-color); color:white; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; font-weight: bold; }
-        .btn-close { background: #64748B; color:white; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; }
+        /* 보안 모달 */
+        #mgmt-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center; padding:20px; }
+        .modal-content { background:white; padding:25px; border-radius:20px; width:100%; max-width:320px; text-align:center; }
+        .modal-content input { width: 100%; margin-bottom: 15px; text-align:center; padding:12px; font-size:18px; }
     </style>
 </head>
 <body>
@@ -71,9 +82,7 @@
         </div>
         <div class="reward-area">
             <div class="reward-board">🪙 <span id="coin-count">0</span></div>
-            <button class="btn-mgmt" onclick="handleMgmtAccess()">
-                <i class="fa-solid fa-lock" style="font-size: 10px;"></i> 관리
-            </button>
+            <button class="btn-mgmt" onclick="handleMgmtAccess()">관리</button>
         </div>
     </div>
 
@@ -83,7 +92,7 @@
         <div class="selected-date-title"><span id="selected-date-label">오늘의 숙제</span></div>
         <div class="input-group">
             <select id="new-category"><option value="school">학교</option><option value="academy">학원</option></select>
-            <input type="text" id="todo-input" placeholder="이 날 할 숙제 입력...">
+            <input type="text" id="todo-input" placeholder="숙제 내용 입력...">
             <button class="btn-add" onclick="addTodo()">등록</button>
         </div>
         <ul id="todo-list" class="todo-list"></ul>
@@ -93,19 +102,17 @@
 <div id="mgmt-modal">
     <div class="modal-content">
         <h3 id="mgmt-title">코인 관리</h3>
-        <p style="font-size: 12px; color: #666; margin-bottom: 10px;">수동 조정 또는 리셋</p>
         <input type="number" id="manual-coin-input">
-        <div class="modal-btns">
-            <button class="btn-save" onclick="updateCoinManual()">수정</button>
-            <button class="btn-reset" onclick="resetCoinManual()">리셋</button>
+        <div style="display:flex; gap:10px;">
+            <button style="flex:1; background:var(--primary-color); color:white; border:none; padding:10px; border-radius:8px;" onclick="updateCoinManual()">수정</button>
+            <button style="flex:1; background:var(--danger-color); color:white; border:none; padding:10px; border-radius:8px;" onclick="resetCoinManual()">리셋</button>
         </div>
-        <hr style="margin:20px 0; border:0; border-top:1px solid #EEE;">
-        <button class="btn-close" onclick="closeMgmt()">닫기</button>
+        <button style="width:100%; margin-top:10px; background:#64748B; color:white; border:none; padding:10px; border-radius:8px;" onclick="closeMgmt()">닫기</button>
     </div>
 </div>
 
 <script>
-    // ⚠️ 아버님의 Firebase URL을 여기에 꼭 다시 넣어주세요!
+    // ⚠️ Firebase URL을 꼭 다시 넣어주세요!
     const FIREBASE_URL = "https://homework-db-6c830-default-rtdb.firebaseio.com/"; 
 
     let currentUser = 'child1';
@@ -114,17 +121,12 @@
     let allTodos = [];
     let currentCoins = 0;
 
-    // --- 보안 로직 ---
     function handleMgmtAccess() {
-        const password = prompt("부모님 비밀번호를 입력하세요.");
-        if (password === "1234") {
-            openMgmt();
-        } else if (password !== null) {
-            alert("비밀번호가 틀렸습니다!");
-        }
+        const password = prompt("부모님 비밀번호(1234)");
+        if (password === "1234") openMgmt();
+        else if (password !== null) alert("틀렸습니다!");
     }
 
-    // --- 사용자 전환 ---
     function switchUser(user) {
         currentUser = user;
         document.getElementById('btn-child1').classList.toggle('active', user === 'child1');
@@ -132,9 +134,8 @@
         fetchData();
     }
 
-    // --- 관리 모달 제어 ---
     function openMgmt() {
-        document.getElementById('mgmt-title').innerText = `${currentUser==='child1'?'첫째':'둘째'} 코인 관리`;
+        document.getElementById('mgmt-title').innerText = `${currentUser==='child1'?'첫째':'둘째'} 관리`;
         document.getElementById('manual-coin-input').value = currentCoins;
         document.getElementById('mgmt-modal').style.display = 'flex';
     }
@@ -142,24 +143,17 @@
     
     function updateCoinManual() {
         const val = parseInt(document.getElementById('manual-coin-input').value);
-        if(isNaN(val)) return;
-        fetch(`${FIREBASE_URL}${currentUser}/coins.json`, { method: 'PUT', body: val }).then(() => {
-            closeMgmt(); fetchData();
-        });
+        fetch(`${FIREBASE_URL}${currentUser}/coins.json`, { method: 'PUT', body: val }).then(() => { closeMgmt(); fetchData(); });
     }
     function resetCoinManual() {
-        if(!confirm('정말 0으로 리셋할까요?')) return;
-        fetch(`${FIREBASE_URL}${currentUser}/coins.json`, { method: 'PUT', body: 0 }).then(() => {
-            closeMgmt(); fetchData();
-        });
+        if(!confirm('리셋할까요?')) return;
+        fetch(`${FIREBASE_URL}${currentUser}/coins.json`, { method: 'PUT', body: 0 }).then(() => { closeMgmt(); fetchData(); });
     }
 
-    // --- 숙제 로직 ---
     function addTodo() {
         const input = document.getElementById('todo-input');
-        const text = input.value.trim();
-        if (!text) return;
-        const newTodo = { category: document.getElementById('new-category').value, text: text, dueDate: selectedDate, completed: false };
+        if (!input.value.trim()) return;
+        const newTodo = { category: document.getElementById('new-category').value, text: input.value.trim(), dueDate: selectedDate, completed: false };
         fetch(`${FIREBASE_URL}${currentUser}/todos.json`, { method: 'POST', body: JSON.stringify(newTodo) }).then(() => { input.value = ''; fetchData(); });
     }
 
@@ -173,33 +167,21 @@
     }
 
     function deleteTodo(id) {
-        if(!confirm('삭제할까요?')) return;
-        const targetTodo = allTodos.find(t => t.id === id);
-        if(targetTodo && targetTodo.completed) {
-            let nextCoins = Math.max(0, currentCoins - 1);
-            fetch(`${FIREBASE_URL}${currentUser}/coins.json`, { method: 'PUT', body: nextCoins }).then(() => actualDelete(id));
-        } else {
-            actualDelete(id);
-        }
+        if(!confirm('삭제?')) return;
+        const target = allTodos.find(t => t.id === id);
+        if(target && target.completed) {
+            fetch(`${FIREBASE_URL}${currentUser}/coins.json`, { method: 'PUT', body: Math.max(0, currentCoins - 1) }).then(() => actualDelete(id));
+        } else actualDelete(id);
     }
-    function actualDelete(id) {
-        fetch(`${FIREBASE_URL}${currentUser}/todos/${id}.json`, { method: 'DELETE' }).then(() => fetchData());
-    }
+    function actualDelete(id) { fetch(`${FIREBASE_URL}${currentUser}/todos/${id}.json`, { method: 'DELETE' }).then(() => fetchData()); }
 
-    // --- 데이터 동기화 ---
     function fetchData() {
         fetch(`${FIREBASE_URL}${currentUser}.json`).then(r => r.json()).then(data => {
             currentCoins = data ? data.coins || 0 : 0;
             allTodos = data && data.todos ? Object.keys(data.todos).map(k => ({ id: k, ...data.todos[k] })) : [];
             document.getElementById('coin-count').innerText = currentCoins;
-            
-            const events = allTodos.map(t => ({
-                id: t.id, title: t.text, start: t.dueDate,
-                backgroundColor: t.category === 'school' ? '#E67E22' : '#9B59B6',
-                className: t.completed ? 'event-completed' : ''
-            }));
             calendar.removeAllEvents();
-            calendar.addEventSource(events);
+            calendar.addEventSource(allTodos.map(t => ({ title: t.text, start: t.dueDate, backgroundColor: t.category==='school'?'#E67E22':'#9B59B6', className: t.completed?'event-completed':'' })));
             renderDayList();
         });
     }
@@ -208,15 +190,11 @@
         const listEl = document.getElementById('todo-list');
         listEl.innerHTML = '';
         const dayTodos = allTodos.filter(t => t.dueDate === selectedDate);
-        document.getElementById('selected-date-label').innerText = `📅 ${selectedDate} 숙제 리스트`;
-        if (dayTodos.length === 0) {
-            listEl.innerHTML = '<li style="text-align:center; color:#9CA3AF; padding:20px;">숙제가 없습니다.</li>';
-            return;
-        }
+        document.getElementById('selected-date-label').innerText = `📅 ${selectedDate} 리스트`;
+        if (dayTodos.length === 0) { listEl.innerHTML = '<li style="text-align:center; color:#9CA3AF; padding:10px;">없음</li>'; return; }
         dayTodos.forEach(t => {
-            const li = document.createElement('li');
-            li.className = `todo-item ${t.completed ? 'completed' : ''}`;
-            li.innerHTML = `<div><span class="badge ${t.category}">${t.category==='school'?'학교':'학원'}</span><span>${t.text}</span></div>
+            const li = document.createElement('li'); li.className = `todo-item ${t.completed ? 'completed' : ''}`;
+            li.innerHTML = `<div><span class="badge ${t.category}">${t.category==='school'?'학교':'학원'}</span><span class="todo-text">${t.text}</span></div>
                 <div><button class="btn-done" onclick="toggleTodo('${t.id}',${t.completed})">${t.completed?'취소':'체크'}</button>
                 <button class="btn-del" onclick="deleteTodo('${t.id}')">삭제</button></div>`;
             listEl.appendChild(li);
@@ -224,19 +202,16 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-        const calendarEl = document.getElementById('calendar');
-        calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth', locale: 'ko', height: 600,
+        calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
+            initialView: 'dayGridMonth', locale: 'ko', height: 'auto',
             headerToolbar: { left: 'prev,next today', center: 'title', right: '' },
             dateClick: function(info) {
                 document.querySelectorAll('.selected-day').forEach(el => el.classList.remove('selected-day'));
                 info.dayEl.classList.add('selected-day');
-                selectedDate = info.dateStr;
-                renderDayList();
+                selectedDate = info.dateStr; renderDayList();
             }
         });
-        calendar.render();
-        fetchData();
+        calendar.render(); fetchData();
         setInterval(fetchData, 10000);
     });
 </script>
