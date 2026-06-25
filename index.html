@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>아들의 당당한 숙제 마스터 PRO</title>
+    <style>
+        :root {
+            --primary-color: #4A90E2;
+            --success-color: #2ECC71;
+            --warning-color: #E67E22;
+            --danger-color: #E74C3C;
+            --bg-color: #F5F7FA;
+        }
+        body {
+            font-family: 'Malgun Gothic', sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 650px;
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        h1 { text-align: center; color: #333; margin-bottom: 10px; }
+        
+        /* 칭찬 스티커 전광판 */
+        .reward-board {
+            background: #FFF9E6;
+            border: 2px dashed #F1C40F;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #D35400;
+        }
+        #coin-count { color: #E67E22; font-size: 24px; }
+
+        .input-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 25px;
+            background: #F9FAFB;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #E5E7EB;
+        }
+        .input-row { display: flex; gap: 10px; }
+        select, input, button {
+            padding: 12px;
+            border: 1px solid #DDD;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+        input[type="text"] { flex: 1; }
+        input[type="date"] { width: 140px; }
+        
+        .btn-add {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+        }
+        button:hover { opacity: 0.9; cursor: pointer; }
+        
+        .todo-list { list-style: none; padding: 0; }
+        .todo-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #FCFCFC;
+            border: 1px solid #EEE;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+        }
+        .todo-item.completed {
+            background-color: #EDF7ED;
+            border-color: var(--success-color);
+            color: #888;
+        }
+        .todo-item.completed .todo-text {
+            text-decoration: line-through;
+        }
+        
+        .todo-info { display: flex; flex-direction: column; gap: 5px; }
+        .todo-meta { display: flex; align-items: center; gap: 8px; }
+        
+        .badge {
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            color: white;
+        }
+        .badge.school { background-color: #E67E22; }
+        .badge.academy { background-color: #9B59B6; }
+        
+        .dday {
+            font-size: 12px;
+            font-weight: bold;
+            color: var(--danger-color);
+        }
+        .todo-text { font-size: 16px; font-weight: 500; }
+
+        .actions button {
+            padding: 8px 12px;
+            font-size: 13px;
+            margin-left: 5px;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-weight: bold;
+        }
+        .btn-done { background-color: var(--success-color); }
+        .btn-del { background-color: #BDC3C7; color: #333; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>📝 오늘의 숙제 클리어!</h1>
+    
+    <!-- 칭찬 스티커 / 코인 보상판 -->
+    <div class="reward-board">
+        🪙 현재 모은 숙제 코인: <span id="coin-count">0</span>개
+        <div style="font-size: 13px; font-weight: normal; margin-top: 5px; color: #666;">
+            (숙제 1개 완료할 때마다 1코인 획득! 30코인이 모이면 원하는 보상 교환!)
+        </div>
+    </div>
+    
+    <!-- 숙제 입력창 -->
+    <div class="input-form">
+        <div class="input-row">
+            <select id="category">
+                <option value="school">학교</option>
+                <option value="academy">학원</option>
+            </select>
+            <input type="text" id="todo-input" placeholder="어떤 숙제를 해야 하나요?">
+        </div>
+        <div class="input-row">
+            <input type="date" id="due-date">
+            <button class="btn-add" onclick="addTodo()">퀘스트 등록</button>
+        </div>
+    </div>
+
+    <!-- 숙제 리스트 -->
+    <ul id="todo-list" class="todo-list"></ul>
+</div>
+
+<script>
+    let coins = parseInt(localStorage.getItem('homeworkCoins')) || 0;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        updateCoinDisplay();
+        // 기본 마감일을 오늘 날짜로 세팅
+        document.getElementById('due-date').value = new Date().toISOString().substring(0, 10);
+        loadTodos();
+    });
+
+    function updateCoinDisplay() {
+        document.getElementById('coin-count').innerText = coins;
+        localStorage.setItem('homeworkCoins', coins);
+    }
+
+    function addTodo() {
+        const category = document.getElementById('category').value;
+        const input = document.getElementById('todo-input');
+        const dueDate = document.getElementById('due-date').value;
+        const text = input.value.trim();
+
+        if (!text) { alert('숙제 내용을 입력해주세요!'); return; }
+        if (!dueDate) { alert('마감일을 선택해주세요!'); return; }
+
+        const todo = {
+            id: Date.now(),
+            category: category,
+            text: text,
+            dueDate: dueDate,
+            completed: false
+        };
+
+        saveTodo(todo);
+        renderTodo(todo);
+        input.value = '';
+    }
+
+    function calculateDDay(dateStr) {
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        const targetDate = new Date(dateStr);
+        targetDate.setHours(0,0,0,0);
+        
+        const diffTime = targetDate - today;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        
+        if (diffDays === 0) return '오늘까지!';
+        if (diffDays < 0) return `만료 (${Math.abs(diffDays)}일 지남)`;
+        return `D-${diffDays}`;
+    }
+
+    function renderTodo(todo) {
+        const list = document.getElementById('todo-list');
+        const li = document.createElement('li');
+        li.className = `todo-item ${todo.completed ? 'completed' : ''}`;
+        li.setAttribute('data-id', todo.id);
+
+        const categoryText = todo.category === 'school' ? '학교' : '학원';
+        const ddayText = todo.completed ? '완료됨' : calculateDDay(todo.dueDate);
+
+        li.innerHTML = `
+            <div class="todo-info">
+                <div class="todo-meta">
+                    <span class="badge ${todo.category}">${categoryText}</span>
+                    <span class="dday">${ddayText}</span>
+                </div>
+                <span class="todo-text">${todo.text}</span>
+            </div>
+            <div class="actions">
+                <button class="btn-done" onclick="toggleTodo(${todo.id})">${todo.completed ? '취소' : '완료'}</button>
+                <button class="btn-del" onclick="deleteTodo(${todo.id})">삭제</button>
+            </div>
+        `;
+        list.appendChild(li);
+    }
+
+    function getTodos() { return JSON.parse(localStorage.getItem('myTodosPRO')) || []; }
+    function saveTodo(todo) {
+        const todos = getTodos();
+        todos.push(todo);
+        // 마감일 순으로 정렬하여 저장
+        todos.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+        localStorage.setItem('myTodosPRO', JSON.stringify(todos));
+        
+        // 정렬된 리스트를 다시 그리기 위해 화면 초기화 후 로드
+        document.getElementById('todo-list').innerHTML = '';
+        todos.forEach(t => renderTodo(t));
+    }
+
+    function loadTodos() {
+        const todos = getTodos();
+        todos.forEach(todo => renderTodo(todo));
+    }
+
+    function toggleTodo(id) {
+        const todos = getTodos();
+        const todo = todos.find(t => t.id === id);
+        if (todo) {
+            todo.completed = !todo.completed;
+            
+            // 코인 시스템 연동 (완료하면 +1, 완료 취소하면 -1)
+            if (todo.completed) {
+                coins += 1;
+            } else {
+                coins = Math.max(0, coins - 1);
+            }
+            
+            localStorage.setItem('myTodosPRO', JSON.stringify(todos));
+            updateCoinDisplay();
+            
+            // 전체 화면 리프레시 (D-day 텍스트 등 업데이트를 위해)
+            document.getElementById('todo-list').innerHTML = '';
+            todos.forEach(t => renderTodo(t));
+        }
+    }
+
+    function deleteTodo(id) {
+        let todos = getTodos();
+        const todo = todos.find(t => t.id === id);
+        
+        // 만약 완료된 숙제를 그냥 삭제하면 코인을 차감할지 유지할지 로직 (여기서는 유지)
+        todos = todos.filter(t => t.id !== id);
+        localStorage.setItem('myTodosPRO', JSON.stringify(todos));
+        
+        const li = document.querySelector(`[data-id="${id}"]`);
+        li.remove();
+    }
+</script>
+
+</body>
+</html>
