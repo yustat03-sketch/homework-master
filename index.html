@@ -3,191 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>우리 집 숙제 마스터 (형제 모드)</title>
+    <title>우리 집 숙제 마스터 (캘린더 모드)</title>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
     <style>
         :root {
             --primary-color: #4A90E2;
             --success-color: #2ECC71;
-            --warning-color: #E67E22;
-            --danger-color: #E74C3C;
+            --school-color: #E67E22;
+            --academy-color: #9B59B6;
             --bg-color: #F5F7FA;
         }
-        body { font-family: 'Malgun Gothic', sans-serif; background-color: var(--bg-color); margin: 0; padding: 20px; display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 650px; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h1 { text-align: center; color: #333; margin-bottom: 20px; }
+        body { font-family: 'Malgun Gothic', sans-serif; background-color: var(--bg-color); margin: 0; padding: 10px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 800px; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         
         /* 사용자 선택 탭 */
-        .user-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
-        .tab-btn { flex: 1; padding: 15px; font-size: 18px; font-weight: bold; border: 2px solid #DDD; background: #FFF; border-radius: 10px; cursor: pointer; transition: all 0.2s; }
+        .user-tabs { display: flex; gap: 8px; margin-bottom: 15px; }
+        .tab-btn { flex: 1; padding: 12px; font-size: 16px; font-weight: bold; border: 2px solid #DDD; background: #FFF; border-radius: 10px; cursor: pointer; }
         .tab-btn.active { background: var(--primary-color); color: white; border-color: var(--primary-color); }
 
-        /* 코인 전광판 */
-        .reward-board { background: #FFF9E6; border: 2px dashed #F1C40F; padding: 15px; border-radius: 10px; text-align: center; margin-bottom: 25px; font-size: 18px; font-weight: bold; color: #D35400; }
-        .coin-count { color: #E67E22; font-size: 24px; }
-
-        .input-form { display: flex; flex-direction: column; gap: 10px; margin-bottom: 25px; background: #F9FAFB; padding: 15px; border-radius: 10px; border: 1px solid #E5E7EB; }
-        .input-row { display: flex; gap: 10px; }
-        select, input, button { padding: 12px; border: 1px solid #DDD; border-radius: 8px; font-size: 15px; }
-        input[type="text"] { flex: 1; }
-        input[type="date"] { width: 140px; }
-        .btn-add { background-color: var(--primary-color); color: white; border: none; font-weight: bold; width: 100%; }
-        button:hover { opacity: 0.9; cursor: pointer; }
+        .reward-board { background: #FFF9E6; border: 1px dashed #F1C40F; padding: 10px; border-radius: 10px; text-align: center; margin-bottom: 15px; font-weight: bold; color: #D35400; }
         
-        .todo-list { list-style: none; padding: 0; }
-        .todo-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #FCFCFC; border: 1px solid #EEE; border-radius: 8px; margin-bottom: 10px; }
-        .todo-item.completed { background-color: #EDF7ED; border-color: var(--success-color); color: #888; }
-        .todo-item.completed .todo-text { text-decoration: line-through; }
-        .todo-info { display: flex; flex-direction: column; gap: 5px; }
-        .todo-meta { display: flex; align-items: center; gap: 8px; }
-        .badge { padding: 3px 6px; border-radius: 4px; font-size: 11px; font-weight: bold; color: white; }
-        .badge.school { background-color: #E67E22; }
-        .badge.academy { background-color: #9B59B6; }
-        .dday { font-size: 12px; font-weight: bold; color: var(--danger-color); }
-        .todo-text { font-size: 16px; font-weight: 500; }
-        .actions button { padding: 8px 12px; font-size: 13px; margin-left: 5px; border: none; border-radius: 6px; color: white; font-weight: bold; }
-        .btn-done { background-color: var(--success-color); }
-        .btn-del { background-color: #BDC3C7; color: #333; }
+        /* 캘린더 스타일 커스텀 */
+        #calendar { margin-bottom: 20px; max-height: 550px; }
+        .fc-event { cursor: pointer; border: none !important; font-size: 0.85em; padding: 2px; }
+        .event-completed { text-decoration: line-through; opacity: 0.6; }
+        
+        /* 숙제 리스트 팝업/영역 */
+        .day-detail { background: #F9FAFB; padding: 15px; border-radius: 10px; border: 1px solid #E5E7EB; margin-top: 10px; }
+        .selected-date-title { font-weight: bold; margin-bottom: 10px; color: #333; display: flex; justify-content: space-between; align-items: center; }
+        
+        .input-row { display: flex; gap: 8px; margin-bottom: 10px; }
+        input[type="text"] { flex: 1; padding: 10px; border: 1px solid #DDD; border-radius: 6px; }
+        .btn-add { padding: 10px 15px; background: var(--primary-color); color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+
+        .todo-list { list-style: none; padding: 0; margin: 0; }
+        .todo-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; border: 1px solid #EEE; border-radius: 6px; margin-bottom: 5px; }
+        .todo-item.completed { background: #F2F2F2; color: #888; }
+        .todo-text { flex: 1; margin: 0 10px; }
+        .badge { padding: 2px 5px; border-radius: 4px; font-size: 10px; color: white; font-weight: bold; }
+        .badge.school { background: var(--school-color); }
+        .badge.academy { background: var(--academy-color); }
+        
+        .actions button { border: none; padding: 5px 8px; border-radius: 4px; color: white; font-size: 12px; cursor: pointer; margin-left: 3px; }
+        .btn-done { background: var(--success-color); }
+        .btn-del { background: #BDC3C7; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>📝 우리 집 숙제 마스터</h1>
-
     <div class="user-tabs">
-        <button class="tab-btn active" onclick="switchUser('child1')">첫째 (준우)</button>
-        <button class="tab-btn" onclick="switchUser('child2')">둘째 (민우)</button>
+        <button id="btn-child1" class="tab-btn active" onclick="switchUser('child1')">첫째</button>
+        <button id="btn-child2" class="tab-btn" onclick="switchUser('child2')">둘째</button>
     </div>
     
     <div class="reward-board">
-        🪙 <span id="current-user-name">첫째</span>의 숙제 코인: <span id="coin-count" class="coin-count">0</span>개
+        🪙 <span id="current-user-name">첫째</span> 코인: <span id="coin-count">0</span>개
     </div>
-    
-    <div class="input-form">
-        <div class="input-row">
-            <select id="category">
+
+    <div id="calendar"></div>
+
+    <div id="day-detail" class="day-detail">
+        <div class="selected-date-title">
+            <span id="selected-date-label">날짜를 선택하세요</span>
+            <select id="new-category">
                 <option value="school">학교</option>
                 <option value="academy">학원</option>
             </select>
-            <input type="text" id="todo-input" placeholder="어떤 숙제를 해야 하나요?">
         </div>
         <div class="input-row">
-            <input type="date" id="due-date">
-            <button class="btn-add" onclick="addTodo()">퀘스트 등록</button>
+            <input type="text" id="todo-input" placeholder="새 숙제 입력...">
+            <button class="btn-add" onclick="addTodo()">등록</button>
         </div>
+        <ul id="todo-list" class="todo-list"></ul>
     </div>
-
-    <ul id="todo-list" class="todo-list"></ul>
 </div>
 
 <script>
-    // ⚠️ 중요: 본인의 파이어베이스 프로젝트 ID로 변경해야 합니다!
+    // ⚠️ 중요: 아버님의 Firebase URL을 여기에 꼭 넣어주세요!
     const FIREBASE_URL = "https://homework-db-6c830-default-rtdb.firebaseio.com/"; 
 
     let currentUser = 'child1';
-    const userNames = { child1: '첫째', child2: '둘째' };
+    let selectedDate = new Date().toISOString().substring(0, 10);
+    let calendar;
+    let allTodos = [];
 
-    document.addEventListener('DOMContentLoaded', () => {
-        document.getElementById('due-date').value = new Date().toISOString().substring(0, 10);
-        fetchData(); // 시작할 때 데이터 실시간 동기화
-        // 3초마다 자동으로 새 데이터를 불러와 아버님 폰과 아이들 폰이 동기화되도록 설정
-        setInterval(fetchData, 3000); 
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            locale: 'ko',
+            height: 'auto',
+            headerToolbar: { left: 'prev,next', center: 'title', right: 'today' },
+            dateClick: function(info) {
+                selectedDate = info.dateStr;
+                updateSelectedDateLabel();
+                renderDayList();
+            },
+            events: [], // 실시간 데이터로 채워질 예정
+            eventClick: function(info) {
+                // 이벤트를 클릭해도 해당 날짜 리스트를 보여줌
+                selectedDate = info.event.startStr;
+                updateSelectedDateLabel();
+                renderDayList();
+            }
+        });
+        calendar.render();
+        updateSelectedDateLabel();
+        fetchData();
+        setInterval(fetchData, 5000); // 5초마다 동기화
     });
 
     function switchUser(user) {
         currentUser = user;
-        document.querySelectorAll('.tab-btn').forEach((btn, idx) => {
-            btn.classList.toggle('active', (idx === 0 && user === 'child1') || (idx === 1 && user === 'child2'));
-        });
-        document.getElementById('current-user-name').innerText = userNames[user];
+        document.getElementById('btn-child1').classList.toggle('active', user === 'child1');
+        document.getElementById('btn-child2').classList.toggle('active', user === 'child2');
+        document.getElementById('current-user-name').innerText = (user === 'child1' ? '첫째' : '둘째');
         fetchData();
     }
 
-    // 서버에서 데이터 가져오기
+    function updateSelectedDateLabel() {
+        document.getElementById('selected-date-label').innerText = `📅 ${selectedDate} 숙제 리스트`;
+    }
+
     function fetchData() {
         fetch(`${FIREBASE_URL}${currentUser}.json`)
         .then(res => res.json())
         .then(data => {
             const coins = data ? data.coins || 0 : 0;
-            const todos = data && data.todos ? Object.keys(data.todos).map(key => ({ id: key, ...data.todos[key] })) : [];
-            
-            // 마감일 정렬
-            todos.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
-            
-            document.getElementById('coin-count').innerText = coins;
-            
-            const list = document.getElementById('todo-list');
-            list.innerHTML = '';
-            todos.forEach(todo => {
-                const li = document.createElement('li');
-                li.className = `todo-item ${todo.completed ? 'completed' : ''}`;
-                
-                const today = new Date(); today.setHours(0,0,0,0);
-                const target = new Date(todo.dueDate); target.setHours(0,0,0,0);
-                const diff = Math.ceil((target - today) / (1000*60*60*24));
-                const ddayText = todo.completed ? '완료됨' : (diff === 0 ? '오늘까지!' : (diff < 0 ? `만료` : `D-${diff}`));
-
-                li.innerHTML = `
-                    <div class="todo-info">
-                        <div class="todo-meta">
-                            <span class="badge ${todo.category}">${todo.category === 'school' ? '학교' : '학원'}</span>
-                            <span class="dday">${ddayText}</span>
-                        </div>
-                        <span class="todo-text">${todo.text}</span>
-                    </div>
-                    <div class="actions">
-                        <button class="btn-done" onclick="toggleTodo('${todo.id}', ${todo.completed})">${todo.completed ? '취소' : '완료'}</button>
-                        <button class="btn-del" onclick="deleteTodo('${todo.id}')">삭제</button>
-                    </div>
-                `;
-                list.appendChild(li);
-            });
-        });
-    }
-
-    function addTodo() {
-        const text = document.getElementById('todo-input').value.trim();
-        const dueDate = document.getElementById('due-date').value;
-        if (!text || !dueDate) return;
-
-        const newTodo = {
-            category: document.getElementById('category').value,
-            text: text,
-            dueDate: dueDate,
-            completed: false
-        };
-
-        fetch(`${FIREBASE_URL}${currentUser}/todos.json`, {
-            method: 'POST',
-            body: JSON.stringify(newTodo)
-        }).then(() => {
-            document.getElementById('todo-input').value = '';
-            fetchData();
-        });
-    }
-
-    function toggleTodo(id, currentStatus) {
-        const nextStatus = !currentStatus;
-        
-        // 코인 점수 계산을 위해 먼저 현재 코인을 조회
-        fetch(`${FIREBASE_URL}${currentUser}/coins.json`)
-        .then(res => res.json())
-        .then(currentCoins => {
-            let coins = currentCoins || 0;
-            coins = nextStatus ? coins + 1 : Math.max(0, coins - 1);
-
-            // 상태와 코인을 서버에 동시에 업데이트
-            Promise.all([
-                fetch(`${FIREBASE_URL}${currentUser}/todos/${id}.json`, { method: 'PATCH', body: JSON.stringify({ completed: nextStatus }) }),
-                fetch(`${FIREBASE_URL}${currentUser}/coins.json`, { method: 'PUT', body: coins })
-            ]).then(() => fetchData());
-        });
-    }
-
-    function deleteTodo(id) {
-        fetch(`${FIREBASE_URL}${currentUser}/todos/${id}.json`, { method: 'DELETE' })
-        .then(() => fetchData());
-    }
-</script>
-</body>
-</html>
+            allTodos = data && data.todos ? Object.keys(data.todos).map(key => ({ id
