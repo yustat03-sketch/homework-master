@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>🧸 우리 아이 숙제 마스터 V4.1</title>
+    <title>🧸 우리 아이 숙제 마스터 V4.2</title>
     <link href="https://fonts.googleapis.com/css2?family=Dongle:wght@400;700&family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
     <style>
@@ -31,11 +31,10 @@
         .status-row { width: 100%; display: flex; justify-content: space-between; align-items: center; background: #fff9db; padding: 10px 20px; border-radius: 20px; border: 2px dashed #fcd34d; }
         .coin-box { font-family: 'Dongle', sans-serif; font-size: 32px; color: #d97706; }
 
-        /* 📅 캘린더 & ⚠️ 삭제선 CSS 중요! */
+        /* 📅 캘린더 & 삭제선 CSS */
         #calendar { background: white; padding: 10px; border-radius: 25px; border: 4px solid #f1f5f9; margin-bottom: 25px; min-height: 500px; }
         .fc-toolbar-title { font-family: 'Dongle', sans-serif; font-size: 2em !important; }
         
-        /* 캘린더 내 삭제선 스타일링 */
         .event-completed { opacity: 0.4 !important; }
         .event-completed .fc-event-title, 
         .event-completed .fc-event-main,
@@ -45,7 +44,7 @@
             text-decoration-thickness: 2px !important;
         }
 
-        /* 📏 입력창 높이 통일: 60px */
+        /* 입력창 높이 통일: 60px */
         .day-detail { background: #f0f9ff; padding: 25px; border-radius: 30px; border: 4px solid #e0f2fe; }
         .date-label { font-family: 'Dongle', sans-serif; font-size: 36px; color: #0369a1; text-align: center; margin-bottom: 15px; }
         
@@ -87,7 +86,7 @@
 <div class="container">
     <div class="header">
         <div class="char-circle">
-            <img id="mascot-img" src="http://googleusercontent.com/image_collection/image_retrieval/1967119782628985011" alt="Mascot">
+            <img id="mascot-img" src="https://googleusercontent.com/image_collection/image_retrieval/1967119782628985011" alt="Mascot">
         </div>
         <div class="user-tabs">
             <button id="tab-c1" class="tab-btn active" onclick="switchUser('child1')">첫째 준우 🐱</button>
@@ -134,9 +133,10 @@
     let allTodos = [];
     let currentCoins = 0;
 
+    // ⚠️ 이미지 주소들을 https:// 로 일괄 수정했습니다.
     const charAvatars = {
-        child1: "http://googleusercontent.com/image_collection/image_retrieval/1967119782628985011", // 고양이
-        child2: "http://googleusercontent.com/image_collection/image_retrieval/2595942517639807241"  // 강아지
+        child1: "https://googleusercontent.com/image_collection/image_retrieval/1967119782628985011", // 고양이
+        child2: "https://googleusercontent.com/image_collection/image_retrieval/2595942517639807241"  // 강아지
     };
 
     function checkAdminPin() {
@@ -197,7 +197,6 @@
                 title: t.text, 
                 start: t.dueDate, 
                 backgroundColor: t.category==='school'? '#fb923c':'#a78bfa',
-                // ⚠️ 중요: 완료된 경우 'event-completed' 클래스 부여
                 className: t.completed ? 'event-completed' : '' 
             })));
             renderList();
@@ -232,4 +231,3 @@
 </script>
 </body>
 </html>
-
