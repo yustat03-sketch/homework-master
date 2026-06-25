@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>우리 집 숙제 마스터 PRO 2.1</title>
+    <title>우리 집 숙제 마스터 PRO 2.2 (Security)</title>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
     <style>
         :root {
@@ -24,7 +24,7 @@
         
         .reward-area { display: flex; align-items: center; gap: 10px; }
         .reward-board { font-size: 18px; font-weight: bold; color: #D35400; background: #FFF9E6; padding: 10px 20px; border-radius: 12px; border: 1px dashed #F1C40F; display: flex; align-items: center; gap: 10px; }
-        .btn-mgmt { background: #64748B; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; }
+        .btn-mgmt { background: #64748B; color: white; border: none; padding: 8px 12px; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px; }
 
         /* 캘린더 */
         #calendar { background: white; padding: 15px; border-radius: 15px; border: 1px solid #E5E7EB; margin-bottom: 30px; min-height: 550px; }
@@ -50,14 +50,14 @@
         .btn-done { background: var(--success-color); border: none; padding: 8px 15px; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; }
         .btn-del { background: #9CA3AF; border: none; padding: 8px 15px; border-radius: 8px; color: white; cursor: pointer; margin-left: 5px; }
 
-        /* 관리 모달용 배경 */
+        /* 관리 모달 (비밀번호 성공 후 보임) */
         #mgmt-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center; }
-        .modal-content { background:white; padding:30px; border-radius:20px; width:300px; text-align:center; }
-        .modal-content h3 { margin-bottom: 20px; }
-        .modal-content input { width: 100%; margin-bottom: 15px; text-align:center; }
+        .modal-content { background:white; padding:30px; border-radius:20px; width:300px; text-align:center; box-shadow: 0 15px 40px rgba(0,0,0,0.2); }
+        .modal-content h3 { margin-bottom: 20px; color: #1F2937; }
+        .modal-content input { width: 100%; margin-bottom: 15px; text-align:center; font-size: 18px; font-weight: bold; }
         .modal-btns { display:flex; gap:10px; justify-content:center; }
-        .btn-save { background: var(--primary-color); color:white; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; }
-        .btn-reset { background: var(--danger-color); color:white; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; }
+        .btn-save { background: var(--primary-color); color:white; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; font-weight: bold; }
+        .btn-reset { background: var(--danger-color); color:white; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; font-weight: bold; }
         .btn-close { background: #64748B; color:white; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; }
     </style>
 </head>
@@ -71,7 +71,9 @@
         </div>
         <div class="reward-area">
             <div class="reward-board">🪙 <span id="coin-count">0</span></div>
-            <button class="btn-mgmt" onclick="openMgmt()">관리</button>
+            <button class="btn-mgmt" onclick="handleMgmtAccess()">
+                <i class="fa-solid fa-lock" style="font-size: 10px;"></i> 관리
+            </button>
         </div>
     </div>
 
@@ -90,11 +92,12 @@
 
 <div id="mgmt-modal">
     <div class="modal-content">
-        <h3 id="mgmt-title">첫째 코인 관리</h3>
-        <input type="number" id="manual-coin-input" placeholder="코인 수치 입력">
+        <h3 id="mgmt-title">코인 관리</h3>
+        <p style="font-size: 12px; color: #666; margin-bottom: 10px;">수동 조정 또는 리셋</p>
+        <input type="number" id="manual-coin-input">
         <div class="modal-btns">
             <button class="btn-save" onclick="updateCoinManual()">수정</button>
-            <button class="btn-reset" onclick="resetCoinManual()">0으로 리셋</button>
+            <button class="btn-reset" onclick="resetCoinManual()">리셋</button>
         </div>
         <hr style="margin:20px 0; border:0; border-top:1px solid #EEE;">
         <button class="btn-close" onclick="closeMgmt()">닫기</button>
@@ -111,6 +114,17 @@
     let allTodos = [];
     let currentCoins = 0;
 
+    // --- 보안 로직 ---
+    function handleMgmtAccess() {
+        const password = prompt("부모님 비밀번호를 입력하세요.");
+        if (password === "1234") {
+            openMgmt();
+        } else if (password !== null) {
+            alert("비밀번호가 틀렸습니다!");
+        }
+    }
+
+    // --- 사용자 전환 ---
     function switchUser(user) {
         currentUser = user;
         document.getElementById('btn-child1').classList.toggle('active', user === 'child1');
@@ -118,7 +132,7 @@
         fetchData();
     }
 
-    // --- 코인 관리 관련 ---
+    // --- 관리 모달 제어 ---
     function openMgmt() {
         document.getElementById('mgmt-title').innerText = `${currentUser==='child1'?'첫째':'둘째'} 코인 관리`;
         document.getElementById('manual-coin-input').value = currentCoins;
@@ -134,13 +148,13 @@
         });
     }
     function resetCoinManual() {
-        if(!confirm('코인을 0으로 초기화할까요?')) return;
+        if(!confirm('정말 0으로 리셋할까요?')) return;
         fetch(`${FIREBASE_URL}${currentUser}/coins.json`, { method: 'PUT', body: 0 }).then(() => {
             closeMgmt(); fetchData();
         });
     }
 
-    // --- 숙제 관리 관련 ---
+    // --- 숙제 로직 ---
     function addTodo() {
         const input = document.getElementById('todo-input');
         const text = input.value.trim();
@@ -160,14 +174,10 @@
 
     function deleteTodo(id) {
         if(!confirm('삭제할까요?')) return;
-        // 삭제하려는 숙제가 완료 상태인지 확인
         const targetTodo = allTodos.find(t => t.id === id);
         if(targetTodo && targetTodo.completed) {
-            // 완료된 숙제면 코인 차감
             let nextCoins = Math.max(0, currentCoins - 1);
-            fetch(`${FIREBASE_URL}${currentUser}/coins.json`, { method: 'PUT', body: nextCoins }).then(() => {
-                actualDelete(id);
-            });
+            fetch(`${FIREBASE_URL}${currentUser}/coins.json`, { method: 'PUT', body: nextCoins }).then(() => actualDelete(id));
         } else {
             actualDelete(id);
         }
