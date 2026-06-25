@@ -3,75 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>우리 집 숙제 마스터 PRO 2.4</title>
+    <title>🧸 우리 아이 숙제 다이어리 3.0</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dongle:wght@400;700&family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
     <style>
         :root {
-            --primary-color: #4A90E2;
-            --success-color: #2ECC71;
-            --school-color: #E67E22;
-            --academy-color: #9B59B6;
-            --danger-color: #E74C3C;
-            --bg-color: #F8FAFC;
+            --primary-color: #bae6fd; /* 파스텔 블루 */
+            --accent-color: #fde68a;  /* 파스텔 옐로우 */
+            --school-color: #fb923c;
+            --academy-color: #a78bfa;
+            --text-color: #334155;
+            --bg-color: #fffbeb;      /* 크림 배경 */
         }
         
-        body { font-family: 'Malgun Gothic', sans-serif; background-color: var(--bg-color); margin: 0; padding: 10px; display: flex; justify-content: center; overflow-x: hidden; }
-        .container { width: 100%; max-width: 900px; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
+        body { font-family: 'Nanum Gothic', sans-serif; background-color: var(--bg-color); margin: 0; padding: 15px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 850px; background: white; padding: 25px; border-radius: 35px; border: 8px solid #fef3c7; box-shadow: 0 10px 20px rgba(0,0,0,0.03); position: relative; }
         
-        /* 헤더 모바일 대응 */
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 10px; }
-        .user-tabs { display: flex; gap: 5px; flex: 1; }
-        .tab-btn { flex: 1; padding: 12px 5px; font-weight: bold; border: 1px solid #E2E8F0; background: white; border-radius: 10px; cursor: pointer; font-size: 14px; white-space: nowrap; }
-        .tab-btn.active { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+        /* 🐾 캐릭터 장식 */
+        .container::before { content: '🐾'; position: absolute; top: -20px; left: 20px; font-size: 30px; }
+
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 10px; flex-wrap: wrap; }
+        
+        /* 사용자 탭 스타일 */
+        .user-tabs { display: flex; gap: 8px; flex: 1; }
+        .tab-btn { flex: 1; padding: 12px; font-family: 'Dongle', sans-serif; font-size: 24px; font-weight: bold; border: 3px solid #f1f5f9; background: white; border-radius: 20px; cursor: pointer; transition: 0.2s; }
+        .tab-btn.active { background: var(--primary-color); border-color: #7dd3fc; color: #0369a1; }
         
         .reward-area { display: flex; align-items: center; gap: 8px; }
-        .reward-board { font-size: 15px; font-weight: bold; color: #D35400; background: #FFF9E6; padding: 8px 12px; border-radius: 10px; border: 1px dashed #F1C40F; }
-        .btn-mgmt { background: #64748B; color: white; border: none; padding: 10px; border-radius: 10px; font-size: 12px; font-weight: bold; cursor: pointer; height: 40px; }
+        .reward-board { font-family: 'Dongle', sans-serif; font-size: 26px; color: #d97706; background: #fff9db; padding: 5px 15px; border-radius: 20px; border: 2px dashed #fcd34d; }
+        .btn-mgmt { background: #cbd5e1; border: none; padding: 10px; border-radius: 15px; cursor: pointer; font-size: 18px; }
 
-        /* 캘린더 모바일 대응 */
-        #calendar { background: white; padding: 5px; border-radius: 12px; border: 1px solid #E2E8F0; margin-bottom: 20px; min-height: 450px; }
-        .fc-toolbar-title { font-size: 1.1em !important; }
-        .fc-button { padding: 4px 6px !important; font-size: 0.8em !important; }
+        /* 캘린더 커스텀 */
+        #calendar { background: white; padding: 10px; border-radius: 25px; border: 4px solid #f1f5f9; margin-bottom: 25px; min-height: 480px; }
+        .fc-toolbar-title { font-family: 'Dongle', sans-serif; font-size: 2em !important; }
+        .fc-daygrid-day:hover { background: #fff9db !important; }
+        .fc-event { border: none !important; border-radius: 10px; padding: 2px 5px; font-size: 0.85em; }
 
-        /* 상세 리스트 및 입력창 모바일 최적화 */
-        .day-detail { background: #F9FAFB; padding: 15px; border-radius: 12px; border: 1px solid #E2E8F0; }
-        .selected-date-title { font-size: 1em; font-weight: bold; color: #1E293B; margin-bottom: 15px; border-bottom: 2px solid #E2E8F0; padding-bottom: 10px; text-align: center; }
+        /* ⚠️ 입력창 불균형 해결: 캡슐 UI */
+        .day-detail { background: #f0f9ff; padding: 20px; border-radius: 30px; border: 4px solid #e0f2fe; }
+        .selected-date-title { font-family: 'Dongle', sans-serif; font-size: 32px; color: #0369a1; margin-bottom: 15px; text-align: center; }
         
-        /* ⚠️ 핵심: 모바일에서 무조건 수직으로 쌓는 입력 그룹 */
-        .input-group { display: flex; gap: 10px; margin-bottom: 15px; flex-direction: column; }
-        .input-row { display: flex; gap: 10px; width: 100%; }
-        select { width: 90px; height: 50px; font-size: 15px; border-radius: 10px; border: 1px solid #CBD5E1; padding: 0 5px; }
-        input[type="text"] { flex: 1; height: 50px; font-size: 15px; border-radius: 10px; border: 1px solid #CBD5E1; padding: 0 12px; }
-        .btn-add { width: 100%; height: 50px; background: var(--primary-color); color: white; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; }
+        /* 🎨 입력창 디자인 개선: 높이 50px로 통일 */
+        .input-group { display: flex; flex-direction: column; gap: 10px; }
+        .input-capsule { display: flex; height: 50px; background: white; border-radius: 25px; border: 3px solid #bae6fd; overflow: hidden; }
+        
+        select { width: 90px; border: none; background: #f0f9ff; padding: 0 10px; font-weight: bold; border-right: 3px solid #bae6fd; cursor: pointer; font-size: 14px; }
+        input[type="text"] { flex: 1; border: none; padding: 0 15px; font-size: 15px; outline: none; }
+        .btn-add { width: 100%; height: 50px; background: #38bdf8; color: white; border: none; border-radius: 25px; font-family: 'Dongle', sans-serif; font-size: 30px; cursor: pointer; transition: 0.2s; }
+        .btn-add:active { transform: scale(0.95); background: #0ea5e9; }
 
-        /* 리스트 아이템 모바일 대응 */
-        .todo-list { list-style: none; padding: 0; }
-        .todo-item { display: flex; flex-direction: column; padding: 15px; background: white; border: 1px solid #E2E8F0; border-radius: 12px; margin-bottom: 10px; gap: 12px; }
-        .todo-item.completed { background: #F1F5F9; color: #94A3B8; }
-        .todo-main { display: flex; align-items: flex-start; gap: 10px; width: 100%; }
-        .badge { padding: 4px 8px; border-radius: 6px; font-size: 11px; color: white; font-weight: bold; flex-shrink: 0; margin-top: 2px; }
+        /* 숙제 리스트 디자인 */
+        .todo-list { list-style: none; padding: 0; margin-top: 15px; }
+        .todo-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: white; border-radius: 20px; margin-bottom: 10px; border: 2px solid #e2e8f0; }
+        .todo-item.completed { background: #f8fafc; opacity: 0.6; }
+        .todo-main { display: flex; align-items: center; gap: 10px; flex: 1; }
+        .badge { padding: 4px 10px; border-radius: 15px; font-size: 11px; color: white; font-weight: bold; }
         .badge.school { background: var(--school-color); }
         .badge.academy { background: var(--academy-color); }
-        .todo-text { font-size: 16px; flex: 1; word-break: break-all; }
+        .todo-text { font-size: 16px; color: var(--text-color); font-weight: 500; }
         
-        .todo-btns { display: flex; justify-content: flex-end; gap: 8px; width: 100%; }
-        .btn-done { flex: 1; max-width: 100px; height: 44px; background: var(--success-color); border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; }
-        .btn-del { flex: 1; max-width: 80px; height: 44px; background: #94A3B8; border: none; border-radius: 8px; color: white; cursor: pointer; }
+        .todo-btns { display: flex; gap: 5px; }
+        .btn-done { background: #4ade80; border: none; color: white; padding: 8px 12px; border-radius: 12px; font-weight: bold; cursor: pointer; }
+        .btn-del { background: #fca5a5; border: none; color: white; padding: 8px 12px; border-radius: 12px; cursor: pointer; }
 
-        /* 보안 모달 모바일 최적화 */
-        #mgmt-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center; padding:20px; }
-        .modal-content { background:white; padding:25px; border-radius:20px; width:100%; max-width:320px; text-align:center; }
-        .modal-content input { width: 100%; margin-bottom: 15px; text-align:center; padding:15px; font-size:20px; border: 1px solid #DDD; border-radius: 10px; }
-        
-        /* 📱 600px 이상일 때만 가로 배치로 복구 (PC 화면) */
-        @media (min-width: 601px) {
-            .input-group { flex-direction: row; }
-            .btn-add { width: 120px; }
-            .todo-item { flex-direction: row; align-items: center; justify-content: space-between; }
-            .todo-main { width: auto; }
-            .todo-btns { width: auto; }
-            .tab-btn { padding: 12px 20px; font-size: 16px; }
+        /* 모바일 최적화 */
+        @media (max-width: 600px) {
+            .header { flex-direction: column; }
+            .user-tabs { width: 100%; }
+            .reward-area { width: 100%; justify-content: space-between; }
+            .todo-item { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .todo-btns { width: 100%; justify-content: flex-end; }
         }
+
+        /* 보안 모달 */
+        #mgmt-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.3); z-index:9999; justify-content:center; align-items:center; }
+        .modal-content { background:white; padding:30px; border-radius:35px; width:90%; max-width:320px; text-align:center; border: 6px solid #fef3c7; }
+        .modal-content input { width: 100%; margin: 15px 0; padding:12px; border-radius:15px; border: 2px solid #DDD; text-align: center; font-size: 20px; }
     </style>
 </head>
 <body>
@@ -79,12 +86,12 @@
 <div class="container">
     <div class="header">
         <div class="user-tabs">
-            <button id="btn-child1" class="tab-btn active" onclick="switchUser('child1')">첫째</button>
-            <button id="btn-child2" class="tab-btn" onclick="switchUser('child2')">둘째</button>
+            <button id="btn-child1" class="tab-btn active" onclick="switchUser('child1')">🐱 첫째</button>
+            <button id="btn-child2" class="tab-btn" onclick="switchUser('child2')">🐶 둘째</button>
         </div>
         <div class="reward-area">
-            <div class="reward-board">🪙 <span id="coin-count">0</span></div>
-            <button class="btn-mgmt" onclick="handleMgmtAccess()">관리</button>
+            <div class="reward-board">✨ <span id="coin-count">0</span></div>
+            <button class="btn-mgmt" onclick="handleMgmtAccess()">⚙️</button>
         </div>
     </div>
 
@@ -93,11 +100,14 @@
     <div class="day-detail" id="day-detail">
         <div class="selected-date-title"><span id="selected-date-label">오늘의 숙제</span></div>
         <div class="input-group">
-            <div class="input-row">
-                <select id="new-category"><option value="school">학교</option><option value="academy">학원</option></select>
-                <input type="text" id="todo-input" placeholder="할 일 입력...">
+            <div class="input-capsule">
+                <select id="new-category">
+                    <option value="school">학교</option>
+                    <option value="academy">학원</option>
+                </select>
+                <input type="text" id="todo-input" placeholder="무슨 공부를 할까요?">
             </div>
-            <button class="btn-add" onclick="addTodo()">퀘스트 등록</button>
+            <button class="btn-add" onclick="addTodo()">스티커 등록하기! 🐾</button>
         </div>
         <ul id="todo-list" class="todo-list"></ul>
     </div>
@@ -105,13 +115,13 @@
 
 <div id="mgmt-modal">
     <div class="modal-content">
-        <h3 id="mgmt-title">코인 관리</h3>
+        <h3 style="font-family: 'Dongle', sans-serif; font-size: 40px;">부모님 전용 ⚙️</h3>
         <input type="number" id="manual-coin-input">
-        <div style="display:flex; gap:10px;">
-            <button style="flex:1; height:48px; background:var(--primary-color); color:white; border:none; border-radius:10px; font-weight:bold;" onclick="updateCoinManual()">수정</button>
-            <button style="flex:1; height:48px; background:var(--danger-color); color:white; border:none; border-radius:10px; font-weight:bold;" onclick="resetCoinManual()">리셋</button>
+        <div style="display:flex; gap:8px;">
+            <button style="flex:1; background:var(--primary-color); border:none; padding:12px; border-radius:15px; font-weight:bold; cursor:pointer;" onclick="updateCoinManual()">수정</button>
+            <button style="flex:1; background:#fecaca; border:none; padding:12px; border-radius:15px; font-weight:bold; cursor:pointer;" onclick="resetCoinManual()">리셋</button>
         </div>
-        <button style="width:100%; margin-top:10px; height:48px; background:#64748B; color:white; border:none; border-radius:10px;" onclick="closeMgmt()">닫기</button>
+        <button style="width:100%; margin-top:10px; background:#f1f5f9; border:none; padding:10px; border-radius:15px;" onclick="closeMgmt()">닫기</button>
     </div>
 </div>
 
@@ -126,9 +136,9 @@
     let currentCoins = 0;
 
     function handleMgmtAccess() {
-        const password = prompt("비밀번호(1234)");
+        const password = prompt("비밀번호를 입력하세요(1234)");
         if (password === "1234") openMgmt();
-        else if (password !== null) alert("틀렸습니다!");
+        else if (password !== null) alert("비밀번호가 틀렸어요! 🐱");
     }
 
     function switchUser(user) {
@@ -139,7 +149,6 @@
     }
 
     function openMgmt() {
-        document.getElementById('mgmt-title').innerText = `${currentUser==='child1'?'첫째':'둘째'} 관리`;
         document.getElementById('manual-coin-input').value = currentCoins;
         document.getElementById('mgmt-modal').style.display = 'flex';
     }
@@ -150,7 +159,7 @@
         fetch(`${FIREBASE_URL}${currentUser}/coins.json`, { method: 'PUT', body: val }).then(() => { closeMgmt(); fetchData(); });
     }
     function resetCoinManual() {
-        if(!confirm('리셋할까요?')) return;
+        if(!confirm('코인을 0개로 다시 시작할까요?')) return;
         fetch(`${FIREBASE_URL}${currentUser}/coins.json`, { method: 'PUT', body: 0 }).then(() => { closeMgmt(); fetchData(); });
     }
 
@@ -171,7 +180,7 @@
     }
 
     function deleteTodo(id) {
-        if(!confirm('삭제?')) return;
+        if(!confirm('이 숙제를 지울까요?')) return;
         const target = allTodos.find(t => t.id === id);
         if(target && target.completed) {
             fetch(`${FIREBASE_URL}${currentUser}/coins.json`, { method: 'PUT', body: Math.max(0, currentCoins - 1) }).then(() => actualDelete(id));
@@ -185,7 +194,12 @@
             allTodos = data && data.todos ? Object.keys(data.todos).map(k => ({ id: k, ...data.todos[k] })) : [];
             document.getElementById('coin-count').innerText = currentCoins;
             calendar.removeAllEvents();
-            calendar.addEventSource(allTodos.map(t => ({ title: t.text, start: t.dueDate, backgroundColor: t.category==='school'?'#E67E22':'#9B59B6', className: t.completed?'event-completed':'' })));
+            calendar.addEventSource(allTodos.map(t => ({ 
+                title: (t.category==='school'?'[학교] ':'[학원] ')+t.text, 
+                start: t.dueDate, 
+                backgroundColor: t.category==='school'? '#fb923c':'#a78bfa',
+                className: t.completed?'event-completed':'' 
+            })));
             renderDayList();
         });
     }
@@ -194,12 +208,12 @@
         const listEl = document.getElementById('todo-list');
         listEl.innerHTML = '';
         const dayTodos = allTodos.filter(t => t.dueDate === selectedDate);
-        document.getElementById('selected-date-label').innerText = `📅 ${selectedDate} 리스트`;
-        if (dayTodos.length === 0) { listEl.innerHTML = '<li style="text-align:center; color:#9CA3AF; padding:10px;">없음</li>'; return; }
+        document.getElementById('selected-date-label').innerText = `📅 ${selectedDate} 숙제장`;
+        if (dayTodos.length === 0) { listEl.innerHTML = '<li style="text-align:center; color:#9CA3AF; padding:20px;">오늘은 숙제가 없어요! 야호! 🎈</li>'; return; }
         dayTodos.forEach(t => {
             const li = document.createElement('li'); li.className = `todo-item ${t.completed ? 'completed' : ''}`;
             li.innerHTML = `<div class="todo-main"><span class="badge ${t.category}">${t.category==='school'?'학교':'학원'}</span><span class="todo-text">${t.text}</span></div>
-                <div class="todo-btns"><button class="btn-done" onclick="toggleTodo('${t.id}',${t.completed})">${t.completed?'취소':'체크'}</button>
+                <div class="todo-btns"><button class="btn-done" onclick="toggleTodo('${t.id}',${t.completed})">${t.completed?'취소':'완료'}</button>
                 <button class="btn-del" onclick="deleteTodo('${t.id}')">삭제</button></div>`;
             listEl.appendChild(li);
         });
@@ -210,14 +224,15 @@
             initialView: 'dayGridMonth', locale: 'ko', height: 'auto',
             headerToolbar: { left: 'prev,next today', center: 'title', right: '' },
             dateClick: function(info) {
-                document.querySelectorAll('.selected-day').forEach(el => el.classList.remove('selected-day'));
-                info.dayEl.classList.add('selected-day');
+                document.querySelectorAll('.fc-daygrid-day').forEach(el => el.style.backgroundColor = '');
+                info.dayEl.style.backgroundColor = '#fff9db';
                 selectedDate = info.dateStr; renderDayList();
             }
         });
         calendar.render(); fetchData();
-        setInterval(fetchData, 10000);
+        setInterval(fetchData, 8000);
     });
 </script>
 </body>
 </html>
+
