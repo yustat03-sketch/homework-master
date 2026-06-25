@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>🧸 우리 아이 숙제 마스터 V4.2</title>
+    <title>🧸 우리 아이 숙제 마스터 V5.0</title>
     <link href="https://fonts.googleapis.com/css2?family=Dongle:wght@400;700&family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
     <style>
@@ -13,69 +13,66 @@
             --school-color: #fb923c;
             --academy-color: #a78bfa;
             --text-color: #334155;
-            --bg-color: #fffbeb;
+            --bg-color: #f0fdf4;
         }
         
         body { font-family: 'Nanum Gothic', sans-serif; background-color: var(--bg-color); margin: 0; padding: 15px; display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 850px; background: white; padding: 25px; border-radius: 35px; border: 8px solid #fef3c7; box-shadow: 0 10px 20px rgba(0,0,0,0.03); }
+        .container { width: 100%; max-width: 850px; background: white; padding: 25px; border-radius: 35px; border: 8px solid #dcfd8b; box-shadow: 0 10px 20px rgba(0,0,0,0.03); }
         
         /* 🐱🐶 캐릭터 상단 배치 */
         .header { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; gap: 15px; }
-        .char-circle { width: 130px; height: 130px; border-radius: 50%; border: 6px solid #fde68a; background: white; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .char-circle img { width: 90%; height: 90%; object-fit: contain; }
+        .char-circle { width: 140px; height: 140px; border-radius: 50%; border: 6px solid #fde68a; background: white; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .char-circle img { width: 85%; height: 85%; object-fit: contain; }
         
         .user-tabs { display: flex; gap: 8px; width: 100%; }
-        .tab-btn { flex: 1; padding: 12px; font-family: 'Dongle', sans-serif; font-size: 26px; border: 3px solid #f1f5f9; background: white; border-radius: 20px; cursor: pointer; transition: 0.2s; }
+        .tab-btn { flex: 1; padding: 12px; font-family: 'Dongle', sans-serif; font-size: 26px; border: 3px solid #f1f5f9; background: white; border-radius: 20px; cursor: pointer; transition: 0.2s; outline: none; }
         .tab-btn.active { background: var(--primary-color); border-color: #7dd3fc; color: #0369a1; }
         
         .status-row { width: 100%; display: flex; justify-content: space-between; align-items: center; background: #fff9db; padding: 10px 20px; border-radius: 20px; border: 2px dashed #fcd34d; }
-        .coin-box { font-family: 'Dongle', sans-serif; font-size: 32px; color: #d97706; }
+        .coin-box { font-family: 'Dongle', sans-serif; font-size: 34px; color: #d97706; }
 
-        /* 📅 캘린더 & 삭제선 CSS */
+        /* 📅 캘린더 스타일 및 ⚠️ 삭제선 강제 적용 최적화 */
         #calendar { background: white; padding: 10px; border-radius: 25px; border: 4px solid #f1f5f9; margin-bottom: 25px; min-height: 500px; }
         .fc-toolbar-title { font-family: 'Dongle', sans-serif; font-size: 2em !important; }
         
-        .event-completed { opacity: 0.4 !important; }
+        /* 캘린더 내부 완료 숙제 삭제선 (전역 강제 설정) */
+        .event-completed { opacity: 0.5 !important; }
         .event-completed .fc-event-title, 
         .event-completed .fc-event-main,
-        .event-completed div { 
+        .event-completed div,
+        .event-completed span { 
             text-decoration: line-through !important; 
-            text-decoration-color: #333 !important;
+            text-decoration-color: rgba(0,0,0,0.6) !important;
             text-decoration-thickness: 2px !important;
         }
 
-        /* 입력창 높이 통일: 60px */
+        /* 📏 입력창 높이 60px 통일 */
         .day-detail { background: #f0f9ff; padding: 25px; border-radius: 30px; border: 4px solid #e0f2fe; }
-        .date-label { font-family: 'Dongle', sans-serif; font-size: 36px; color: #0369a1; text-align: center; margin-bottom: 15px; }
-        
-        .input-box-wrapper { display: flex; flex-direction: column; gap: 15px; }
-        .input-pill { display: flex; height: 60px; background: white; border-radius: 30px; border: 3px solid #bae6fd; overflow: hidden; align-items: stretch; }
+        .date-label { font-family: 'Dongle', sans-serif; font-size: 38px; color: #0369a1; text-align: center; margin-bottom: 15px; }
+        .input-pill { display: flex; height: 60px; background: white; border-radius: 30px; border: 3px solid #bae6fd; overflow: hidden; align-items: stretch; margin-bottom: 15px; }
         
         select { width: 110px; border: none; background: #e0f2fe; padding-left: 15px; font-weight: bold; border-right: 3px solid #bae6fd; font-size: 16px; outline: none; }
-        input[type="text"] { flex: 1; border: none; padding: 0 20px; font-size: 17px; outline: none; }
-        .btn-add-homework { width: 100%; height: 60px; background: #38bdf8; color: white; border: none; border-radius: 30px; font-family: 'Dongle', sans-serif; font-size: 36px; cursor: pointer; transition: 0.2s; }
-        .btn-add-homework:active { transform: scale(0.97); }
+        input[type="text"] { flex: 1; border: none; padding: 0 20px; font-size: 17px; outline: none; background: transparent; height: 100%; }
+        .btn-add-homework { width: 100%; height: 60px; background: #38bdf8; color: white; border: none; border-radius: 30px; font-family: 'Dongle', sans-serif; font-size: 36px; cursor: pointer; transition: 0.2s; box-shadow: 0 4px #0ea5e9; }
+        .btn-add-homework:active { transform: translateY(2px); box-shadow: 0 2px #0ea5e9; }
 
-        /* 리스트 아이템 */
+        /* 리스트 스타일 */
         .todo-list { list-style: none; padding: 0; margin-top: 20px; }
         .todo-card { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: white; border-radius: 20px; margin-bottom: 10px; border: 2px solid #e2e8f0; }
         .todo-card.completed { background: #f1f5f9; }
         .todo-card.completed .todo-text { text-decoration: line-through; color: #94a3b8; }
         
-        .badge { padding: 4px 10px; border-radius: 15px; font-size: 11px; color: white; font-weight: bold; margin-right: 10px; }
-        .badge.school { background: var(--school-color); }
-        .badge.academy { background: var(--academy-color); }
+        .badge { font-weight: bold; margin-right: 8px; }
+        .todo-text { font-size: 17px; color: var(--text-color); font-weight: 500; }
         
         .btn-action-done { background: #4ade80; border: none; color: white; padding: 10px 18px; border-radius: 12px; font-weight: bold; cursor: pointer; }
         .btn-action-del { background: #fca5a5; border: none; color: white; padding: 10px 18px; border-radius: 12px; cursor: pointer; margin-left: 5px; }
 
         /* 보안 모달 */
         #mgmt-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.3); z-index:9999; justify-content:center; align-items:center; }
-        .modal-body { background:white; padding:30px; border-radius:35px; width:90%; max-width:320px; text-align:center; border: 6px solid #fef3c7; }
+        .modal-body { background:white; padding:30px; border-radius:35px; width:90%; max-width:320px; text-align:center; border: 6px solid #dcfd8b; }
         
         @media (max-width: 600px) {
-            .header { flex-direction: column; }
-            .input-box-wrapper { gap: 10px; }
             .todo-card { flex-direction: column; align-items: flex-start; gap: 10px; }
             .todo-btns { width: 100%; display: flex; justify-content: flex-end; }
         }
@@ -86,8 +83,8 @@
 <div class="container">
     <div class="header">
         <div class="char-circle">
-            <!-- ⚠️ 안전한 최신 고양이 이미지로 초기 주소를 교체했습니다. -->
-            <img id="mascot-img" src="https://googleusercontent.com/image_collection/image_retrieval/996458536850023077_0" alt="Mascot">
+            <!-- ⚠️ OpenMoji 영구 서버 이미지로 전면 교체 (절대 404 안 뜸) -->
+            <img id="mascot-img" src="https://openmoji.org/data/color/svg/1F431.svg" alt="Cat Mascot">
         </div>
         <div class="user-tabs">
             <button id="tab-c1" class="tab-btn active" onclick="switchUser('child1')">첫째 준우 🐱</button>
@@ -103,13 +100,11 @@
 
     <div class="day-detail" id="day-area">
         <div class="date-label"><span id="target-date-display">오늘의 미션</span></div>
-        <div class="input-box-wrapper">
-            <div class="input-pill">
-                <select id="homework-type"><option value="school">학교</option><option value="academy">학원</option></select>
-                <input type="text" id="homework-input" placeholder="무엇을 공부할까요?">
-            </div>
-            <button class="btn-add-homework" onclick="addHomework()">미션 등록 완료! 🐾</button>
+        <div class="input-pill">
+            <select id="homework-type"><option value="school">학교</option><option value="academy">학원</option></select>
+            <input type="text" id="homework-input" placeholder="무엇을 공부할까요?">
         </div>
+        <button class="btn-add-homework" onclick="addHomework()">미션 등록 완료! 🐾</button>
         <ul id="homework-list" class="todo-list"></ul>
     </div>
 </div>
@@ -118,14 +113,14 @@
     <h3 style="font-family:'Dongle'; font-size:45px; margin:0;">부모님 전용 ⚙️</h3>
     <input type="number" id="manual-coin-val" style="width:100%; padding:15px; margin:20px 0; border-radius:15px; border:2px solid #DDD; text-align:center; font-size:24px;">
     <div style="display:flex; gap:10px;">
-        <button style="flex:1; background:var(--primary-color); border:none; padding:15px; border-radius:15px; font-weight:bold; cursor:pointer;" onclick="updateCoins()">수정</button>
+        <button style="flex:1; background:#bae6fd; border:none; padding:15px; border-radius:15px; font-weight:bold; cursor:pointer;" onclick="updateCoins()">수정</button>
         <button style="flex:1; background:#fecaca; border:none; padding:15px; border-radius:15px; font-weight:bold; cursor:pointer;" onclick="resetCoins()">리셋</button>
     </div>
     <button style="width:100%; margin-top:15px; background:#f1f5f9; border:none; padding:10px; border-radius:15px;" onclick="closeAdmin()">닫기</button>
 </div></div>
 
 <script>
-    // ⚠️ 아버님의 Firebase URL을 여기에 다시 넣어주세요!
+    // ⚠️ 아버님의 Firebase URL을 여기에 다시 넣어주세요! 끝에 / 가 있어야 합니다.
     const FIREBASE_URL = "https://homework-db-6c830-default-rtdb.firebaseio.com/"; 
 
     let currentUser = 'child1';
@@ -134,10 +129,10 @@
     let allTodos = [];
     let currentCoins = 0;
 
-    // ⚠️ 에러 없는 최신 안전 HTTPS 이미지로 맵을 업데이트했습니다.
+    // 🐾 OpenMoji 공식 영구 주소 (Cat & Dog)
     const charAvatars = {
-        child1: "https://googleusercontent.com/image_collection/image_retrieval/996458536850023077_0", // 노란 고양이
-        child2: "https://googleusercontent.com/image_collection/image_retrieval/18215780982259528855_0"  // 하늘색 강아지
+        child1: "https://openmoji.org/data/color/svg/1F431.svg", // 고양이
+        child2: "https://openmoji.org/data/color/svg/1F436.svg"  // 강아지
     };
 
     function checkAdminPin() {
@@ -160,7 +155,7 @@
         fetch(`${FIREBASE_URL}${currentUser}/coins.json`, { method:'PUT', body:document.getElementById('manual-coin-val').value }).then(()=> {closeAdmin(); fetchData();});
     }
     function resetCoins() {
-        if(confirm('스티커를 0개로 다시 시작할까요?')) fetch(`${FIREBASE_URL}${currentUser}/coins.json`, { method:'PUT', body:0 }).then(()=> {closeAdmin(); fetchData();});
+        if(confirm('리셋할까요?')) fetch(`${FIREBASE_URL}${currentUser}/coins.json`, { method:'PUT', body:0 }).then(()=> {closeAdmin(); fetchData();});
     }
 
     function addHomework() {
@@ -208,10 +203,10 @@
         const list = document.getElementById('homework-list'); list.innerHTML = '';
         const dayTasks = allTodos.filter(t=>t.dueDate === selectedDate);
         document.getElementById('target-date-display').innerText = `📅 ${selectedDate} 숙제 리스트`;
-        if(dayTasks.length===0) { list.innerHTML='<li style="text-align:center; color:#9CA3AF; padding:20px;">숙제를 완료하고 스티커를 받아요! 🎈</li>'; return; }
+        if(dayTasks.length===0) { list.innerHTML='<li style="text-align:center; color:#9CA3AF; padding:20px;">야호! 아직 등록된 미션이 없어요 🎈</li>'; return; }
         dayTasks.forEach(t => {
             const li = document.createElement('li'); li.className = `todo-card ${t.completed?'completed':''}`;
-            li.innerHTML = `<div class="todo-main"><span class="badge ${t.category}">${t.category==='school'?'학교':'학원'}</span><span class="todo-text">${t.text}</span></div>
+            li.innerHTML = `<div><span style="font-weight:bold; color:${t.category==='school'?'#fb923c':'#a78bfa'};">[${t.category==='school'?'학교':'학원'}]</span> <span class="todo-text">${t.text}</span></div>
                 <div class="todo-btns"><button class="btn-action-done" onclick="toggleStatus('${t.id}',${t.completed})">${t.completed?'취소':'완료'}</button>
                 <button class="btn-action-del" onclick="removeHomework('${t.id}')">삭제</button></div>`;
             list.appendChild(li);
