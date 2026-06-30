@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>🧸 우리 아이 숙제 마스터 V5.2 (2주 달력)</title>
+    <title>🧸 우리 아이 숙제 마스터 V5.4 (모바일 폰트 최적화)</title>
     <link href="https://fonts.googleapis.com/css2?family=Dongle:wght@400;700&family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
     <style>
@@ -28,7 +28,7 @@
         .status-row { width: 100%; display: flex; justify-content: space-between; align-items: center; background: #fff9db; padding: 10px 20px; border-radius: 20px; border: 2px dashed #fcd34d; }
         .coin-box { font-family: 'Dongle', sans-serif; font-size: 34px; color: #d97706; }
 
-        /* 📅 캘린더 높이 조절 (2주 분량에 맞춤) */
+        /* 📅 캘린더 스타일 */
         #calendar { background: white; padding: 10px; border-radius: 25px; border: 4px solid #f1f5f9; margin-bottom: 25px; min-height: 250px; }
         .fc-toolbar-title { font-family: 'Dongle', sans-serif; font-size: 2em !important; }
         
@@ -62,9 +62,22 @@
         #mgmt-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.3); z-index:9999; justify-content:center; align-items:center; }
         .modal-body { background:white; padding:30px; border-radius:35px; width:90%; max-width:320px; text-align:center; border: 6px solid #dcfd8b; }
         
+        /* 📱 ⭐ [핵심 추가] 모바일 화면(600px 이하) 전용 폰트 축소 세팅 */
         @media (max-width: 600px) {
-            .todo-card { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .container { padding: 15px; border-width: 5px; }
+            .tab-btn { font-size: 22px; padding: 8px; border-radius: 15px; } /* 상단 이름 탭 축소 */
+            .coin-box { font-size: 26px; } /* 스티커 글씨 축소 */
+            .fc-toolbar-title { font-size: 1.5em !important; } /* 달력 월 이름 축se */
+            .date-label { font-size: 28px; } /* 오늘의 미션 제목 축소 */
+            .btn-add-homework { font-size: 28px; height: 50px; border-radius: 25px; } /* 등록 버튼 축소 */
+            .input-pill { height: 50px; border-radius: 25px; }
+            select { width: 85px; font-size: 14px; }
+            input[type="text"] { font-size: 15px; padding: 0 15px; }
+            
+            .todo-card { flex-direction: column; align-items: flex-start; gap: 10px; padding: 12px; border-radius: 15px; }
+            .todo-text { font-size: 15px; }
             .todo-btns { width: 100%; display: flex; justify-content: flex-end; }
+            .btn-action-done, .btn-action-del { padding: 8px 14px; font-size: 14px; border-radius: 10px; }
         }
     </style>
 </head>
@@ -73,6 +86,7 @@
 <div class="container">
     <div class="header">
         <div class="user-tabs">
+            <!-- ⚠️ 100~101번째 줄: 아들들의 실제 이름으로 고쳐주세요! -->
             <button id="tab-c1" class="tab-btn active" onclick="switchUser('child1')">박준서</button>
             <button id="tab-c2" class="tab-btn" onclick="switchUser('child2')">박준수</button>
         </div>
@@ -194,13 +208,13 @@
 
     document.addEventListener('DOMContentLoaded', function() {
         calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
-            // ⭐ 2주 단위 보기로 변경 적용 완료!
             initialView: 'dayGrid',
             views: {
                 dayGrid: {
                     duration: { weeks: 2 }
                 }
             },
+            dateIncrement: { weeks: 1 }, 
             locale: 'ko',
             height: 'auto',
             headerToolbar: { left: 'prev,next today', center: 'title', right: '' },
