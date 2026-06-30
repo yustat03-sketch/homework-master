@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>🧸 우리 아이 숙제 마스터 V5.5 (과목 확장 & 모바일 리스트 뷰)</title>
+    <title>🧸 우리 아이 숙제 마스터 V5.6 (날짜 선택기 도입)</title>
     <link href="https://fonts.googleapis.com/css2?family=Dongle:wght@400;700&family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
     <style>
@@ -12,11 +12,10 @@
             --accent-color: #fde68a;
             --text-color: #334155;
             --bg-color: #f0fdf4;
-            /* 과목별 색상 지정 */
-            --color-school: #fb923c;   /* 학교: 주황 */
-            --color-english: #38bdf8;  /* 영어: 하늘 */
-            --color-science: #4ade80;  /* 과학: 연두 */
-            --color-math: #a78bfa;     /* 수학: 보라 */
+            --color-school: #fb923c;
+            --color-english: #38bdf8;
+            --color-science: #4ade80;
+            --color-math: #a78bfa;
         }
         
         body { font-family: 'Nanum Gothic', sans-serif; background-color: var(--bg-color); margin: 0; padding: 15px; display: flex; justify-content: center; }
@@ -31,30 +30,29 @@
         .status-row { width: 100%; display: flex; justify-content: space-between; align-items: center; background: #fff9db; padding: 10px 20px; border-radius: 20px; border: 2px dashed #fcd34d; }
         .coin-box { font-family: 'Dongle', sans-serif; font-size: 34px; color: #d97706; }
 
-        /* 📅 캘린더 기본 스타일 */
+        /* 📅 캘린더 */
         #calendar { background: white; padding: 10px; border-radius: 25px; border: 4px solid #f1f5f9; margin-bottom: 25px; min-height: 250px; }
         .fc-toolbar-title { font-family: 'Dongle', sans-serif; font-size: 2em !important; }
         
-        /* 📱 모바일용 전체 미션 리스트 (기본 숨김) */
+        /* 📱 모바일 전용 일정 목록 */
         #mobile-all-tasks { display: none; margin-bottom: 25px; }
         .mobile-section-title { font-family: 'Dongle', sans-serif; font-size: 32px; color: #475569; margin-bottom: 10px; text-align: center; }
         .mobile-task-item { display: flex; justify-content: space-between; padding: 10px 15px; background: #f8fafc; border-left: 5px solid #cbd5e1; border-radius: 10px; margin-bottom: 8px; font-size: 14px; }
         .mobile-task-item.completed { opacity: 0.6; background: #f1f5f9; }
-        .mobile-task-item.completed .m-text { text-decoration: line-through; color: #94a3b8; }
         
         .event-completed { opacity: 0.5 !important; }
-        .event-completed .fc-event-title, .event-completed .fc-event-main { 
-            text-decoration: line-through !important; 
-            text-decoration-color: rgba(0,0,0,0.6) !important;
-            text-decoration-thickness: 2px !important;
-        }
+        .event-completed .fc-event-title, .event-completed .fc-event-main { text-decoration: line-through !important; }
 
         .day-detail { background: #f0f9ff; padding: 25px; border-radius: 30px; border: 4px solid #e0f2fe; }
-        .date-label { font-family: 'Dongle', sans-serif; font-size: 38px; color: #0369a1; text-align: center; margin-bottom: 15px; }
+        
+        /* ⭐ 날짜 선택기 스타일 */
+        .date-selector-container { display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 15px; }
+        .date-input { border: 2px solid #bae6fd; border-radius: 15px; padding: 5px 15px; font-family: 'Dongle', sans-serif; font-size: 28px; color: #0369a1; text-align: center; cursor: pointer; background: white; outline: none; }
+
         .input-pill { display: flex; height: 60px; background: white; border-radius: 30px; border: 3px solid #bae6fd; overflow: hidden; align-items: stretch; margin-bottom: 15px; }
         
-        select { width: 110px; border: none; background: #e0f2fe; padding-left: 15px; font-weight: bold; border-right: 3px solid #bae6fd; font-size: 16px; outline: none; }
-        input[type="text"] { flex: 1; border: none; padding: 0 20px; font-size: 17px; outline: none; background: transparent; height: 100%; }
+        select { width: 100px; border: none; background: #e0f2fe; padding-left: 10px; font-weight: bold; border-right: 3px solid #bae6fd; font-size: 16px; outline: none; }
+        input[type="text"] { flex: 1; border: none; padding: 0 15px; font-size: 17px; outline: none; background: transparent; }
         .btn-add-homework { width: 100%; height: 60px; background: #38bdf8; color: white; border: none; border-radius: 30px; font-family: 'Dongle', sans-serif; font-size: 36px; cursor: pointer; transition: 0.2s; box-shadow: 0 4px #0ea5e9; }
         .btn-add-homework:active { transform: translateY(2px); box-shadow: 0 2px #0ea5e9; }
 
@@ -63,35 +61,25 @@
         .todo-card.completed { background: #f1f5f9; }
         .todo-card.completed .todo-text { text-decoration: line-through; color: #94a3b8; }
         
-        .badge { font-weight: bold; margin-right: 8px; }
         .todo-text { font-size: 17px; color: var(--text-color); font-weight: 500; }
-        
         .btn-action-done { background: #4ade80; border: none; color: white; padding: 10px 18px; border-radius: 12px; font-weight: bold; cursor: pointer; }
         .btn-action-del { background: #fca5a5; border: none; color: white; padding: 10px 18px; border-radius: 12px; cursor: pointer; margin-left: 5px; }
 
         #mgmt-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.3); z-index:9999; justify-content:center; align-items:center; }
         .modal-body { background:white; padding:30px; border-radius:35px; width:90%; max-width:320px; text-align:center; border: 6px solid #dcfd8b; }
         
-        /* 📱 모바일 화면(600px 이하) 최적화 */
         @media (max-width: 600px) {
             .container { padding: 15px; border-width: 5px; }
             .tab-btn { font-size: 22px; padding: 8px; border-radius: 15px; }
-            .coin-box { font-size: 26px; }
-            
-            /* ⭐ 모바일에서는 비좁은 달력을 숨기고 전체 리스트 뷰를 노출합니다. */
             #calendar { display: none; }
             #mobile-all-tasks { display: block; }
-            
-            .date-label { font-size: 28px; }
+            .date-input { font-size: 24px; }
             .btn-add-homework { font-size: 28px; height: 50px; border-radius: 25px; }
             .input-pill { height: 50px; border-radius: 25px; }
-            select { width: 85px; font-size: 14px; }
-            input[type="text"] { font-size: 15px; padding: 0 15px; }
-            
+            select { width: 80px; font-size: 14px; }
+            input[type="text"] { font-size: 15px; }
             .todo-card { flex-direction: column; align-items: flex-start; gap: 10px; padding: 12px; border-radius: 15px; }
-            .todo-text { font-size: 15px; }
             .todo-btns { width: 100%; display: flex; justify-content: flex-end; }
-            .btn-action-done, .btn-action-del { padding: 8px 14px; font-size: 14px; border-radius: 10px; }
         }
     </style>
 </head>
@@ -112,12 +100,16 @@
     <div id="calendar"></div>
 
     <div id="mobile-all-tasks">
-        <div class="mobile-section-title">📅 다가오는 미션 목록 (모바일)</div>
+        <div class="mobile-section-title">📅 저장된 미션 보기</div>
         <div id="mobile-list-container"></div>
     </div>
 
     <div class="day-detail" id="day-area">
-        <div class="date-label"><span id="target-date-display">오늘의 미션</span></div>
+        <div class="date-selector-container">
+            <span style="font-family:'Dongle'; font-size:32px; color:#475569;">날짜:</span>
+            <input type="date" id="main-date-picker" class="date-input" onchange="changeDate(this.value)">
+        </div>
+
         <div class="input-pill">
             <select id="homework-type">
                 <option value="school">학교</option>
@@ -128,6 +120,8 @@
             <input type="text" id="homework-input" placeholder="무엇을 공부할까요?">
         </div>
         <button class="btn-add-homework" onclick="addHomework()">미션 등록 완료! 🐾</button>
+        
+        <div id="target-date-title" style="font-family:'Dongle'; font-size:32px; color:#0369a1; text-align:center; margin-top:20px;"></div>
         <ul id="homework-list" class="todo-list"></ul>
     </div>
 </div>
@@ -143,7 +137,7 @@
 </div></div>
 
 <script>
-    // ⚠️ 아버님의 Firebase 주소를 꼭 다시 넣어주세요! (끝에 / 포함)
+    // ⚠️ 아버님의 Firebase 주소를 꼭 다시 넣어주세요!
     const FIREBASE_URL = "https://homework-db-6c830-default-rtdb.firebaseio.com/"; 
 
     let currentUser = 'child1';
@@ -152,9 +146,18 @@
     let allTodos = [];
     let currentCoins = 0;
 
-    // 과목 매핑 정보 및 색상 정의
     const cateMap = { school: '학교', english: '영어', science: '과학', math: '수학' };
     const colorMap = { school: '#fb923c', english: '#38bdf8', science: '#4ade80', math: '#a78bfa' };
+
+    // 초기 날짜 설정
+    document.getElementById('main-date-picker').value = selectedDate;
+
+    function changeDate(dateStr) {
+        selectedDate = dateStr;
+        // PC 달력이 보이고 있다면 달력 날짜도 이동
+        if (calendar) calendar.gotoDate(dateStr);
+        renderList();
+    }
 
     function checkAdminPin() {
         if(prompt("보안 번호를 입력하세요(1234)") === "1234") {
@@ -209,13 +212,9 @@
             allTodos = data && data.todos ? Object.keys(data.todos).map(k=>({ id:k, ...data.todos[k] })) : [];
             document.getElementById('coin-val').innerText = currentCoins;
             
-            // 달력 이벤트 갱신 (확장된 4개 컬러 매핑)
             calendar.removeAllEvents();
             calendar.addEventSource(allTodos.map(t => ({ 
-                title: t.text, 
-                start: t.dueDate, 
-                backgroundColor: colorMap[t.category] || '#cbd5e1',
-                className: t.completed ? 'event-completed' : '' 
+                title: t.text, start: t.dueDate, backgroundColor: colorMap[t.category] || '#cbd5e1', className: t.completed ? 'event-completed' : '' 
             })));
             
             renderList();
@@ -223,15 +222,15 @@
         });
     }
 
-    // 선택된 특정 날짜 숙제 목록
     function renderList() {
         const list = document.getElementById('homework-list'); list.innerHTML = '';
         const dayTasks = allTodos.filter(t=>t.dueDate === selectedDate);
-        document.getElementById('target-date-display').innerText = `📅 ${selectedDate} 숙제 리스트`;
-        if(dayTasks.length===0) { list.innerHTML='<li style="text-align:center; color:#9CA3AF; padding:20px;">야호! 아직 등록된 미션이 없어요 🎈</li>'; return; }
+        document.getElementById('target-date-title').innerText = `✨ ${selectedDate} 미션 목록 ✨`;
+        
+        if(dayTasks.length===0) { list.innerHTML='<li style="text-align:center; color:#9CA3AF; padding:20px;">이 날은 아직 미션이 없어요 🎈</li>'; return; }
         dayTasks.forEach(t => {
-            const label = cateMap[t.category] || '기타';
-            const color = colorMap[t.category] || '#cbd5e1';
+            const label = cateMap[t.category];
+            const color = colorMap[t.category];
             const li = document.createElement('li'); li.className = `todo-card ${t.completed?'completed':''}`;
             li.innerHTML = `<div><span style="font-weight:bold; color:${color};">[${label}]</span> <span class="todo-text">${t.text}</span></div>
                 <div class="todo-btns"><button class="btn-action-done" onclick="toggleStatus('${t.id}',${t.completed})">${t.completed?'취소':'완료'}</button>
@@ -240,42 +239,26 @@
         });
     }
 
-    // 📱 모바일 전용: 날짜별로 묶은 전체 리스트 뷰 렌더링
     function renderMobileAllList() {
         const container = document.getElementById('mobile-list-container');
         container.innerHTML = '';
         if(allTodos.length === 0) {
-            container.innerHTML = '<div style="text-align:center; color:#94a3b8; padding:15px;">등록된 미션이 하나도 없어요.</div>';
+            container.innerHTML = '<div style="text-align:center; color:#94a3b8; padding:15px;">등록된 미션이 없어요.</div>';
             return;
         }
-        
-        // 날짜순 정렬
         const sortedTodos = [...allTodos].sort((a,b) => a.dueDate.localeCompare(b.dueDate));
-        
-        // 최근 일정이 위로 보이게 하거나 다 보이기 함 (최대 10개 표시로 쾌적하게 구성 가능)
         sortedTodos.forEach(t => {
-            const label = cateMap[t.category] || '기타';
-            const color = colorMap[t.category] || '#cbd5e1';
             const item = document.createElement('div');
             item.className = `mobile-task-item ${t.completed ? 'completed' : ''}`;
-            item.style.borderLeftColor = color;
-            item.style.cursor = 'pointer';
-            // 모바일 목록에서 항목을 터치하면 해당 날짜 미션 입력 및 하단 리스트가 바로 활성화되도록 유도
+            item.style.borderLeftColor = colorMap[t.category];
             item.onclick = () => {
-                selectedDate = t.dueDate;
-                renderList();
+                document.getElementById('main-date-picker').value = t.dueDate;
+                changeDate(t.dueDate);
                 document.getElementById('day-area').scrollIntoView({ behavior: 'smooth' });
             };
-            
             item.innerHTML = `
-                <div class="m-text">
-                    <span style="color:#64748b; font-weight:bold; margin-right:5px;">${t.dueDate.substring(5)}</span>
-                    <span style="font-weight:bold; color:${color};">[${label}]</span> 
-                    <span>${t.text}</span>
-                </div>
-                <div style="font-weight:bold; color:${t.completed ? '#22c55e' : '#94a3b8'};">
-                    ${t.completed ? '✅' : '⏳'}
-                </div>
+                <div><span style="color:#64748b; font-weight:bold;">${t.dueDate.substring(5)}</span> <span style="font-weight:bold; color:${colorMap[t.category]};">[${cateMap[t.category]}]</span> ${t.text}</div>
+                <div>${t.completed ? '✅' : '⏳'}</div>
             `;
             container.appendChild(item);
         });
@@ -284,18 +267,15 @@
     document.addEventListener('DOMContentLoaded', function() {
         calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
             initialView: 'dayGrid',
-            views: {
-                dayGrid: {
-                    duration: { weeks: 2 }
-                }
-            },
+            views: { dayGrid: { duration: { weeks: 2 } } },
             dateIncrement: { weeks: 1 }, 
-            locale: 'ko',
-            height: 'auto',
+            locale: 'ko', height: 'auto',
             headerToolbar: { left: 'prev,next today', center: 'title', right: '' },
             dateClick: function(info) {
                 document.querySelectorAll('.fc-daygrid-day').forEach(el=>el.style.backgroundColor='');
-                info.dayEl.style.backgroundColor='#fff9db'; selectedDate = info.dateStr; renderList();
+                info.dayEl.style.backgroundColor='#fff9db';
+                document.getElementById('main-date-picker').value = info.dateStr;
+                changeDate(info.dateStr);
             }
         });
         calendar.render(); fetchData(); setInterval(fetchData, 8000);
