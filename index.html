@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>🧸 우리 아이 숙제 마스터 V5.6 (날짜 선택기 도입)</title>
+    <title>🧸 우리 아이 숙제 마스터 V5.7 (모바일 한 줄 고정)</title>
     <link href="https://fonts.googleapis.com/css2?family=Dongle:wght@400;700&family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
     <style>
@@ -45,9 +45,9 @@
 
         .day-detail { background: #f0f9ff; padding: 25px; border-radius: 30px; border: 4px solid #e0f2fe; }
         
-        /* ⭐ 날짜 선택기 스타일 */
-        .date-selector-container { display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 15px; }
-        .date-input { border: 2px solid #bae6fd; border-radius: 15px; padding: 5px 15px; font-family: 'Dongle', sans-serif; font-size: 28px; color: #0369a1; text-align: center; cursor: pointer; background: white; outline: none; }
+        /* ⭐ 날짜 선택기 스타일 (한 줄 고정 강제) */
+        .date-selector-container { display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 15px; flex-wrap: nowrap !important; white-space: nowrap; }
+        .date-input { border: 2px solid #bae6fd; border-radius: 15px; padding: 5px 10px; font-family: 'Dongle', sans-serif; font-size: 28px; color: #0369a1; text-align: center; cursor: pointer; background: white; outline: none; }
 
         .input-pill { display: flex; height: 60px; background: white; border-radius: 30px; border: 3px solid #bae6fd; overflow: hidden; align-items: stretch; margin-bottom: 15px; }
         
@@ -73,10 +73,14 @@
             .tab-btn { font-size: 22px; padding: 8px; border-radius: 15px; }
             #calendar { display: none; }
             #mobile-all-tasks { display: block; }
-            .date-input { font-size: 24px; }
+            
+            /* ⭐ 모바일 날짜 선택창 폰트 크기 미세 조정 */
+            .date-selector-container span { font-size: 26px !important; }
+            .date-input { font-size: 22px; padding: 4px 8px; }
+            
             .btn-add-homework { font-size: 28px; height: 50px; border-radius: 25px; }
             .input-pill { height: 50px; border-radius: 25px; }
-            select { width: 80px; font-size: 14px; }
+            select { width: 75px; font-size: 14px; padding-left: 5px; }
             input[type="text"] { font-size: 15px; }
             .todo-card { flex-direction: column; align-items: flex-start; gap: 10px; padding: 12px; border-radius: 15px; }
             .todo-btns { width: 100%; display: flex; justify-content: flex-end; }
@@ -88,8 +92,9 @@
 <div class="container">
     <div class="header">
         <div class="user-tabs">
-            <button id="tab-c1" class="tab-btn active" onclick="switchUser('child1')">첫째이름</button>
-            <button id="tab-c2" class="tab-btn" onclick="switchUser('child2')">둘째이름</button>
+            <!-- ⚠️ 98~99번째 줄: 아들들의 실제 이름으로 고쳐주세요! -->
+            <button id="tab-c1" class="tab-btn active" onclick="switchUser('child1')">박준서</button>
+            <button id="tab-c2" class="tab-btn" onclick="switchUser('child2')">박준수</button>
         </div>
         <div class="status-row">
             <div class="coin-box">칭찬 스티커 ✨ <span id="coin-val">0</span>개</div>
@@ -106,7 +111,7 @@
 
     <div class="day-detail" id="day-area">
         <div class="date-selector-container">
-            <span style="font-family:'Dongle'; font-size:20px; color:#475569;">날짜:</span>
+            <span style="font-family:'Dongle'; font-size:32px; color:#475569;">날짜:</span>
             <input type="date" id="main-date-picker" class="date-input" onchange="changeDate(this.value)">
         </div>
 
@@ -149,12 +154,10 @@
     const cateMap = { school: '학교', english: '영어', science: '과학', math: '수학' };
     const colorMap = { school: '#fb923c', english: '#38bdf8', science: '#4ade80', math: '#a78bfa' };
 
-    // 초기 날짜 설정
     document.getElementById('main-date-picker').value = selectedDate;
 
     function changeDate(dateStr) {
         selectedDate = dateStr;
-        // PC 달력이 보이고 있다면 달력 날짜도 이동
         if (calendar) calendar.gotoDate(dateStr);
         renderList();
     }
